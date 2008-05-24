@@ -2,7 +2,7 @@
 " autocomplpop.vim - Automatically open the popup menu for completion.
 "=============================================================================
 "
-" Author:  Takeshi Nishida <ns9tks(at)gmail.com>
+" Author:  Takeshi NISHIDA <ns9tks@DELETE-ME.gmail.com>
 " Version: 2.4, for Vim 7.1
 " Licence: MIT Licence
 " URL:     http://www.vim.org/scripts/script.php?script_id=1879
@@ -387,7 +387,7 @@ endfunction
 
 " }}}1
 
-" INITIALIZATION: GLOBAL OPTIONS: ======================================= {{{1
+" GLOBAL OPTIONS: ======================================================= {{{1
 "...........................................................................
 if !exists('g:AutoComplPop_NotEnableAtStartup')
   let g:AutoComplPop_NotEnableAtStartup = 0
@@ -550,7 +550,7 @@ call extend(g:AutoComplPop_Behavior, {
       \   ],
       \ } ,'keep')
 
-" INITIALIZATION: COMMANDS, AUTOCOMMANDS, MAPPINGS, ETC.: =============== {{{1
+" COMMANDS/AUTOCOMMANDS/MAPPINGS/ETC.: ================================== {{{1
 command! -bar -narg=0 AutoComplPopEnable  call s:Enable()
 command! -bar -narg=0 AutoComplPopDisable call s:Disable()
 command! -bar -narg=0 AutoComplPopLock    call s:PopupFeeder.lock()

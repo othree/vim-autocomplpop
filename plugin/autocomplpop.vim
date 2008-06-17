@@ -30,18 +30,16 @@
 "
 "     1. The keyword completion is attempted if the text before the cursor
 "        consists of two keyword character.
-"     2. The keyword completion is attempted in Scheme file if the text before
-"        the cursor consists of "(" + a keyword character.
-"     3. The filename completion is attempted if the text before the cursor
+"     2. The filename completion is attempted if the text before the cursor
 "        consists of a filename character + a path separator + 0 or more
 "        filename characters.
-"     4. The omni completion is attempted in Ruby file if the text before the
+"     3. The omni completion is attempted in Ruby file if the text before the
 "        cursor consists of "." or "::". (Ruby interface is required.)
-"     5. The omni completion is attempted in Python file if the text before
+"     4. The omni completion is attempted in Python file if the text before
 "        the cursor consists of ".". (Python interface is required.)
-"     6. The omni completion is attempted in HTML/XHTML file if the text
+"     5. The omni completion is attempted in HTML/XHTML file if the text
 "        before the cursor consists of "<" or "</".
-"     7. The omni completion is attempted in CSS file if the text before the
+"     6. The omni completion is attempted in CSS file if the text before the
 "        cursor consists of ":", ";", "{", "@", "!", or in the start of line
 "        with blank characters and keyword characters.
 "
@@ -55,7 +53,7 @@
 "
 " Options: -------------------------------------------------------------- {{{1
 "   g:AutoComplPop_NotEnableAtStartup:
-"     The auto-popup is not enabled at startup if this is non-zero.
+"     The auto-popup is not enabled at startup if non-zero is set.
 "
 "   g:AutoComplPop_MappingDriven:
 "     The auto-popup is triggered by key mappings instead of CursorMovedI
@@ -69,12 +67,53 @@
 "     This is set to 'complete' when the popup menu is opened.
 "
 "   g:AutoComplPop_CompleteoptPreview:
-"     If this is non-zero, 'preview' is added to 'completeopt' when the popup
+"     If non-zero is set, 'preview' is added to 'completeopt' when the popup
 "     menu is opened.
 "
+"   g:AutoComplPop_BehaviorKeywordLength:
+"     This is the length of keyword characters to type to attempt the keyword
+"     completion. If negative value is set, it will never attempt this
+"     completion.
+"
+"   g:AutoComplPop_BehaviorFileLength:
+"     This is the length of filename characters to type to attempt the
+"     filename completion. If negative value is set, it will never attempt
+"     this completion.
+"
+"   g:AutoComplPop_BehaviorRubyOmniMethodLength:
+"     This is the length of keyword characters to type to attempt the ruby
+"     omni-completion for methods. If negative value is set, it will never
+"     attempt this completion.
+"
+"   g:AutoComplPop_BehaviorRubyOmniSymbolLength:
+"     This is the length of keyword characters to type to attempt the ruby
+"     omni-completion for symbols. If negative value is set, it will never
+"     attempt this completion.
+"
+"   g:AutoComplPop_BehaviorPythonOmniLength:
+"     This is the length of keyword characters to type to attempt the python
+"     omni-completion. If negative value is set, it will never attempt this
+"     completion.
+"
+"   g:AutoComplPop_BehaviorHtmlOmniLength:
+"     This is the length of keyword characters to type to attempt the HTML
+"     omni-completion. If negative value is set, it will never attempt this
+"     completion.
+"
+"   g:AutoComplPop_BehaviorCssOmniPropertyLength:
+"     This is the length of keyword characters to type to attempt the CSS
+"     omni-completion for properties. If negative value is set, it will never
+"     attempt this completion.
+"
+"   g:AutoComplPop_BehaviorCssOmniValueLength:
+"     This is the length of keyword characters to type to attempt the CSS
+"     omni-completion for values. If negative value is set, it will never
+"     attempt this completion.
+"
 "   g:AutoComplPop_Behavior:
-"     This is a dictionary. Each key corresponds to a filetype. '*' is
-"     default. Each value is a list. These are attempted in sequence until
+"     This option is for advanced users. This overwrite other behavior
+"     options. This is a dictionary. Each key corresponds to a filetype. '*'
+"     is default. Each value is a list. These are attempted in sequence until
 "     completion item is found. Each element is a dictionary which has
 "     following items:
 "       ['command']:
@@ -91,6 +130,7 @@
 " ChangeLog: ------------------------------------------------------------ {{{1
 "   2.5:
 "     - TODO:
+"     - Behavior系オプションのこと
 "
 "   2.4:
 "     - Added g:AutoComplPop_MappingDriven option.

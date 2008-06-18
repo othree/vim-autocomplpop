@@ -1,4 +1,3 @@
-" TODO: g:AutoComplPop_Behavior はadvanced user 的な人以外にはオススメしないことを明記する
 "=============================================================================
 " autocomplpop.vim - Automatically open the popup menu for completion.
 "=============================================================================
@@ -71,47 +70,47 @@
 "     menu is opened.
 "
 "   g:AutoComplPop_BehaviorKeywordLength:
-"     This is the length of keyword characters to type to attempt the keyword
-"     completion. If negative value is set, it will never attempt this
-"     completion.
+"     This is the length of keyword characters before the cursor which are
+"     needed to attempt the keyword completion. If negative value is set, it
+"     will never attempt this completion.
 "
 "   g:AutoComplPop_BehaviorFileLength:
-"     This is the length of filename characters to type to attempt the
-"     filename completion. If negative value is set, it will never attempt
-"     this completion.
+"     This is the length of filename characters before the cursor which are
+"     needed to attempt the filename completion. If negative value is set, it
+"     will never attempt this completion.
 "
 "   g:AutoComplPop_BehaviorRubyOmniMethodLength:
-"     This is the length of keyword characters to type to attempt the ruby
-"     omni-completion for methods. If negative value is set, it will never
-"     attempt this completion.
+"     This is the length of keyword characters before the cursor which are
+"     needed to attempt the ruby omni-completion for methods. If negative
+"     value is set, it will never attempt this completion.
 "
 "   g:AutoComplPop_BehaviorRubyOmniSymbolLength:
-"     This is the length of keyword characters to type to attempt the ruby
-"     omni-completion for symbols. If negative value is set, it will never
-"     attempt this completion.
+"     This is the length of keyword characters before the cursor which are
+"     needed to attempt the ruby omni-completion for symbols. If negative
+"     value is set, it will never attempt this completion.
 "
 "   g:AutoComplPop_BehaviorPythonOmniLength:
-"     This is the length of keyword characters to type to attempt the python
-"     omni-completion. If negative value is set, it will never attempt this
-"     completion.
+"     This is the length of keyword characters before the cursor which are
+"     needed to attempt the python omni-completion. If negative value is set,
+"     it will never attempt this completion.
 "
 "   g:AutoComplPop_BehaviorHtmlOmniLength:
-"     This is the length of keyword characters to type to attempt the HTML
-"     omni-completion. If negative value is set, it will never attempt this
-"     completion.
+"     This is the length of keyword characters before the cursor which are
+"     needed to attempt the HTML omni-completion. If negative value is set, it
+"     will never attempt this completion.
 "
 "   g:AutoComplPop_BehaviorCssOmniPropertyLength:
-"     This is the length of keyword characters to type to attempt the CSS
-"     omni-completion for properties. If negative value is set, it will never
-"     attempt this completion.
+"     This is the length of keyword characters before the cursor which are
+"     needed to attempt the CSS omni-completion for properties. If negative
+"     value is set, it will never attempt this completion.
 "
 "   g:AutoComplPop_BehaviorCssOmniValueLength:
-"     This is the length of keyword characters to type to attempt the CSS
-"     omni-completion for values. If negative value is set, it will never
-"     attempt this completion.
+"     This is the length of keyword characters before the cursor which are
+"     needed to attempt the CSS omni-completion for values. If negative value
+"     is set, it will never attempt this completion.
 "
 "   g:AutoComplPop_Behavior:
-"     This option is for advanced users. This overwrite other behavior
+"     This option is for advanced users. This setting overrides other behavior
 "     options. This is a dictionary. Each key corresponds to a filetype. '*'
 "     is default. Each value is a list. These are attempted in sequence until
 "     completion item is found. Each element is a dictionary which has
@@ -129,8 +128,15 @@
 "
 " ChangeLog: ------------------------------------------------------------ {{{1
 "   2.5:
-"     - TODO:
-"     - Behavior系オプションのこと
+"     - Added some options to customize behavior easily:
+"         g:AutoComplPop_BehaviorKeywordLength
+"         g:AutoComplPop_BehaviorFileLength
+"         g:AutoComplPop_BehaviorRubyOmniMethodLength
+"         g:AutoComplPop_BehaviorRubyOmniSymbolLength
+"         g:AutoComplPop_BehaviorPythonOmniLength
+"         g:AutoComplPop_BehaviorHtmlOmniLength
+"         g:AutoComplPop_BehaviorCssOmniPropertyLength
+"         g:AutoComplPop_BehaviorCssOmniValueLength
 "
 "   2.4:
 "     - Added g:AutoComplPop_MappingDriven option.
@@ -289,7 +295,7 @@ endfunction
 " FUNCTION: BEHAVIOR ==================================================== {{{1
 
 "-----------------------------------------------------------------------------
-function! s:MakeBehavior()
+function! s:MakeDefaultBehavior()
   let behavs = {
         \   '*'      : [],
         \   'ruby'   : [],
@@ -577,7 +583,7 @@ endif
 if !exists('g:AutoComplPop_Behavior')
   let g:AutoComplPop_Behavior = {}
 endif
-call extend(g:AutoComplPop_Behavior, s:MakeBehavior(), 'keep')
+call extend(g:AutoComplPop_Behavior, s:MakeDefaultBehavior(), 'keep')
 
 
 " COMMANDS/AUTOCOMMANDS/MAPPINGS/ETC.: ================================== {{{1

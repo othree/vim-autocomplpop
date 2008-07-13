@@ -288,7 +288,6 @@ function! s:Disable()
   nnoremap R <Nop> | nunmap R
 endfunction
 
-
 " FUNCTION: BEHAVIOR ==================================================== {{{1
 
 "-----------------------------------------------------------------------------
@@ -471,7 +470,6 @@ function! s:PopupFeeder.on_popup_post()
   endif
 endfunction
 
-
 " OBJECT: OptionManager: sets or restores temporary options ============= {{{1
 let s:OptionManager = { 'originals' : {} }
 "-----------------------------------------------------------------------------
@@ -487,7 +485,6 @@ function! s:OptionManager.restore_all()
   endfor
   let self.originals = {}
 endfunction
-
 
 " OBJECT: FeedMapping: manages global mappings ========================== {{{1
 let s:FeedMapping = { 'keys' :  [] }
@@ -510,7 +507,6 @@ function! s:FeedMapping.map()
   endfor
 endfunction
 
-
 "-----------------------------------------------------------------------------
 function! s:FeedMapping.unmap()
   for key in self.keys
@@ -519,7 +515,6 @@ function! s:FeedMapping.unmap()
 
   let self.keys = []
 endfunction
-
 
 " }}}1
 

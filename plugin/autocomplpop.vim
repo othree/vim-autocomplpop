@@ -3,24 +3,28 @@
 "=============================================================================
 "
 " Author:  Takeshi NISHIDA <ns9tks@DELETE-ME.gmail.com>
-" Version: 2.5, for Vim 7.1
+" Version: 2.6, for Vim 7.1
 " Licence: MIT Licence
 " URL:     http://www.vim.org/scripts/script.php?script_id=1879
 "
 " GetLatestVimScripts: 1879 1 :AutoInstall: autocomplpop.vim
 "
 "=============================================================================
-" DOCUMENT: (Japanese: http://vim.g.hatena.ne.jp/keyword/autocomplpop.vim)
+" DOCUMENT: {{{1
+"   Japanese: http://vim.g.hatena.ne.jp/keyword/autocomplpop.vim
 "
-" Description: ---------------------------------------------------------- {{{1
+"-----------------------------------------------------------------------------
+" Description:
 "   Install this plugin and your vim comes to automatically opens the popup
 "   menu for completion when you enter characters or move the cursor in Insert
 "   mode.
 "
-" Installation: --------------------------------------------------------- {{{1
+"-----------------------------------------------------------------------------
+" Installation:
 "   Drop this file in your plugin directory.
 "
-" Usage: ---------------------------------------------------------------- {{{1
+"-----------------------------------------------------------------------------
+" Usage:
 "   If this plugin has been installed, the auto-popup is enabled at startup by
 "   default.
 "
@@ -50,7 +54,8 @@
 "     :AutoComplPopDisable
 "       - removes autocommands for the auto-popup.
 "
-" Options: -------------------------------------------------------------- {{{1
+"-----------------------------------------------------------------------------
+" Options:
 "   g:AutoComplPop_NotEnableAtStartup:
 "     The auto-popup is not enabled at startup if non-zero is set.
 "
@@ -123,10 +128,16 @@
 "       ['repeat']:
 "         It automatically repeats a completion if non-zero is set.
 "
-" Thanks: --------------------------------------------------------------- {{{1
+"-----------------------------------------------------------------------------
+" Special Thanks:
 "   vimtip #1386
+"   Daniel Schierbeck
 "
-" ChangeLog: ------------------------------------------------------------ {{{1
+"-----------------------------------------------------------------------------
+" ChangeLog:
+"   2.6:
+"     - Improved the behavior of omni completion for HTML/XHTML.
+"
 "   2.5:
 "     - Added some options to customize behavior easily:
 "         g:AutoComplPop_BehaviorKeywordLength
@@ -232,7 +243,7 @@
 "       not opened.
 "
 "   0.1:
-"       - First release.
+"     - First release.
 "
 " }}}1
 "=============================================================================
@@ -350,7 +361,7 @@ function! s:MakeDefaultBehavior()
   if g:AutoComplPop_BehaviorHtmlOmniLength >= 0
     let behav_html = {
           \   'command'  : "\<C-x>\<C-o>",
-          \   'pattern'  : printf('\(<\|<\/\|<[^>]* \)\k\{%d,}$', g:AutoComplPop_BehaviorHtmlOmniLength),
+          \   'pattern'  : printf('\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{%d,}$', g:AutoComplPop_BehaviorHtmlOmniLength),
           \   'repeat'   : 1,
           \ }
     call add(behavs.html , behav_html)

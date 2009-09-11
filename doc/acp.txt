@@ -1,0 +1,322 @@
+*acp.txt*       Automatically offers completions when typing.
+
+        Copyright (c) 2007-2009 Takeshi NISHIDA
+
+AutoComplPop                                              *autocomplpop* *acp*
+
+INTRODUCTION                    |acp-introduction|
+INSTALLATION                    |acp-installation|
+USAGE                           |acp-usage|
+COMMANDS                        |acp-commands|
+OPTIONS                         |acp-options|
+VIMRC EXAMPLE                   |acp-vimrc-sample|
+SPECIAL THANKS                  |acp-thanks|
+CHANGELOG                       |acp-changelog|
+ABOUT                           |acp-about|
+
+==============================================================================
+INTRODUCTION                                                *acp-introduction*
+
+Install this plugin and your vim comes to automatically opens the popup menu
+for completion when you enter characters or move the cursor in Insert mode.
+
+==============================================================================
+INSTALLATION                                                *acp-installation*
+
+Put all files into your runtime directory. If you have the zip file, extract
+it to your runtime directory.
+
+You should place the files as follows:
+>
+        <your runtime directory>/plugin/acp.vim
+        <your runtime directory>/doc/acp.txt
+        ...
+<
+If you disgust to jumble up this plugin and other plugins in your runtime
+directory, put the files into new directory and just add the directory path to
+'runtimepath'. It's easy to uninstall the plugin.
+
+And then update your help tags files to enable fuzzyfinder help. See
+|add-local-help| for details.
+
+==============================================================================
+USAGE                                                              *acp-usage*
+
+If this plugin has been installed, the auto-popup is enabled at startup by
+default.
+
+Which completion method is used depends on the text before the cursor. The
+default behavior is as follows:
+
+  1. The keyword completion is attempted if the text before the cursor
+     consists of two keyword character.
+  2. The filename completion is attempted if the text before the cursor
+     consists of a filename character + a path separator + 0 or more
+     filename characters.
+  3. The omni completion is attempted in Ruby file if the text before the
+     cursor consists of "." or "::". (Ruby interface is required.)
+  4. The omni completion is attempted in Python file if the text before
+     the cursor consists of ".". (Python interface is required.)
+  5. The omni completion is attempted in HTML/XHTML file if the text
+     before the cursor consists of "<" or "</".
+  6. The omni completion is attempted in CSS file if the text before the
+     cursor consists of ":", ";", "{", "@", "!", or in the start of line
+     with blank characters and keyword characters.
+
+This behavior is customizable.
+
+
+
+==============================================================================
+COMMANDS                                                        *acp-commands*
+
+:AcpEnable
+  - makes autocommands for the auto-popup.
+
+:AcpDisable
+  - removes autocommands for the auto-popup.
+
+:AcpLock
+
+:AcpUnlock
+
+
+==============================================================================
+OPTIONS                                                          *acp-options*
+
+g:acp_enableAtStartup:
+  The auto-popup is enabled at startup if non-zero is set.
+
+g:acp_mappingDriven:
+  The auto-popup is triggered by key mappings instead of CursorMovedI
+  event if non-zero is set. This is useful to avoid auto-popup by moving
+  cursor in Insert mode.
+
+g:acp_ignorecaseOption
+  This is set to 'ignorecase' when the popup menu is opened.
+
+g:acp_completeOption:
+  This is set to 'complete' when the popup menu is opened.
+
+g:acp_completeoptPreview:
+  If non-zero is set, 'preview' is added to 'completeopt' when the popup
+  menu is opened.
+
+g:acp_behaviorKeywordCommand:
+  TODO
+
+g:acp_behaviorKeywordLength:
+  This is the length of keyword characters before the cursor which are
+  needed to attempt the keyword completion. If negative value is set, it
+  will never attempt this completion.
+
+g:acp_behaviorFileLength:
+  This is the length of filename characters before the cursor which are
+  needed to attempt the filename completion. If negative value is set, it
+  will never attempt this completion.
+
+g:acp_behaviorRubyOmniMethodLength:
+  This is the length of keyword characters before the cursor which are
+  needed to attempt the ruby omni-completion for methods. If negative
+  value is set, it will never attempt this completion.
+
+g:acp_behaviorRubyOmniSymbolLength:
+  This is the length of keyword characters before the cursor which are
+  needed to attempt the ruby omni-completion for symbols. If negative
+  value is set, it will never attempt this completion.
+
+g:acp_behaviorPythonOmniLength:
+  This is the length of keyword characters before the cursor which are
+  needed to attempt the python omni-completion. If negative value is set,
+  it will never attempt this completion.
+
+g:acp_behaviorHtmlOmniLength:
+  This is the length of keyword characters before the cursor which are
+  needed to attempt the HTML omni-completion. If negative value is set, it
+  will never attempt this completion.
+
+g:acp_behaviorCssOmniPropertyLength:
+  This is the length of keyword characters before the cursor which are
+  needed to attempt the CSS omni-completion for properties. If negative
+  value is set, it will never attempt this completion.
+
+g:acp_behaviorCssOmniValueLength:
+  This is the length of keyword characters before the cursor which are
+  needed to attempt the CSS omni-completion for values. If negative value
+  is set, it will never attempt this completion.
+
+g:acp_behavior:
+  This option is for advanced users. This setting overrides other behavior
+  options. This is a dictionary. Each key corresponds to a filetype. '*'
+  is default. Each value is a list. These are attempted in sequence until
+  completion item is found. Each element is a dictionary which has
+  following items:
+    ['command']:
+      This is a command to be fed to open a popup menu for completion.
+    ['completefunc']:
+      'completefunc' will be set to this user-provided function during the
+      completion. Only makes sense when 'command' is "\<C-x>\<C-u>".
+    ['pattern'], ['excluded']:
+      If a text before the cursor matches ['pattern'] and not
+      ['excluded'], a popup menu is opened.
+    ['repeat']:
+      It automatically repeats a completion if non-zero is set.
+
+
+==============================================================================
+SPECIAL THANKS                                                    *acp-thanks*
+
+- Daniel Schierbeck
+- Ingo Karkat
+
+
+==============================================================================
+CHANGELOG                                                      *acp-changelog*
+
+2.7
+  - TODO
+  - Added g:acp_behaviorKeywordCommand option. If you prefer the previous
+    behavior for keyword completion, set this option "\<C-n>".
+  - Changed default value of g:acp_ignorecaseOption option.
+
+  The following were done by Ingo Karkat:
+
+  - ENH: Added support for setting a user-provided 'completefunc' during the
+    completion, configurable via g:acp_behavior. 
+  - BUG: When the configured completion is <C-p> or <C-x><C-p>, the command to
+    restore the original text (in on_popup_post()) must be reverted, too. 
+  - BUG: When using a custom completion function (<C-x><C-u>) that also uses
+    an s:...() function name, the s:GetSidPrefix() function dynamically
+    determines the wrong SID. Now calling s:DetermineSidPrefix() once during
+    sourcing and caching the value in s:SID. 
+  - BUG: Should not use custom defined <C-X><C-...> completion mappings. Now
+    consistently using unmapped completion commands everywhere. (Beforehand,
+    s:PopupFeeder.feed() used mappings via feedkeys(..., 'm'), but
+    s:PopupFeeder.on_popup_post() did not due to its invocation via
+    :map-expr.) 
+
+2.6:
+  - Improved the behavior of omni completion for HTML/XHTML.
+
+2.5:
+  - Added some options to customize behavior easily:
+      g:AutoComplPop_BehaviorKeywordLength
+      g:AutoComplPop_BehaviorFileLength
+      g:AutoComplPop_BehaviorRubyOmniMethodLength
+      g:AutoComplPop_BehaviorRubyOmniSymbolLength
+      g:AutoComplPop_BehaviorPythonOmniLength
+      g:AutoComplPop_BehaviorHtmlOmniLength
+      g:AutoComplPop_BehaviorCssOmniPropertyLength
+      g:AutoComplPop_BehaviorCssOmniValueLength
+
+2.4:
+  - Added g:AutoComplPop_MappingDriven option.
+
+2.3.1:
+  - Changed to set 'lazyredraw' while a popup menu is visible to avoid
+    flickering.
+  - Changed a behavior for CSS.
+  - Added support for GetLatestVimScripts.
+
+2.3:
+  - Added a behavior for Python to support omni completion.
+  - Added a behavior for CSS to support omni completion.
+
+2.2:
+  - Changed not to work when 'paste' option is set.
+  - Fixed AutoComplPopEnable command and AutoComplPopDisable command to
+    map/unmap "i" and "R".
+
+2.1:
+  - Fixed the problem caused by "." command in Normal mode.
+  - Changed to map "i" and "R" to feed completion command after starting
+    Insert mode.
+  - Avoided the problem caused by Windows IME.
+
+2.0:
+  - Changed to use CursorMovedI event to feed a completion command instead of
+    key mapping. Now the auto-popup is triggered by moving the cursor.
+  - Changed to feed completion command after starting Insert mode.
+  - Removed g:AutoComplPop_MapList option.
+
+1.7:
+  - Added behaviors for HTML/XHTML. Now supports the omni completion for
+    HTML/XHTML.
+  - Changed not to show expressions for CTRL-R =.
+  - Changed not to set 'nolazyredraw' while a popup menu is visible.
+
+1.6.1:
+  - Changed not to trigger the filename completion by a text which has
+    multi-byte characters.
+
+1.6:
+  - Redesigned g:AutoComplPop_Behavior option.
+  - Changed default value of g:AutoComplPop_CompleteOption option.
+  - Changed default value of g:AutoComplPop_MapList option.
+
+1.5:
+  - Implemented continuous-completion for the filename completion. And added
+    new option to g:AutoComplPop_Behavior.
+
+1.4:
+  - Fixed the bug that the auto-popup was not suspended in fuzzyfinder.
+  - Fixed the bug that an error has occurred with Ruby-omni-completion unless
+    Ruby interface.
+
+1.3:
+  - Supported Ruby-omni-completion by default.
+  - Supported filename completion by default.
+  - Added g:AutoComplPop_Behavior option.
+  - Added g:AutoComplPop_CompleteoptPreview option.
+  - Removed g:AutoComplPop_MinLength option.
+  - Removed g:AutoComplPop_MaxLength option.
+  - Removed g:AutoComplPop_PopupCmd option.
+
+1.2:
+  - Fixed bugs related to 'completeopt'.
+
+1.1:
+  - Added g:AutoComplPop_IgnoreCaseOption option.
+  - Added g:AutoComplPop_NotEnableAtStartup option.
+  - Removed g:AutoComplPop_LoadAndEnable option.
+1.0:
+  - g:AutoComplPop_LoadAndEnable option for a startup activation is added.
+  - AutoComplPopLock command and AutoComplPopUnlock command are added to
+    suspend and resume.
+  - 'completeopt' and 'complete' options are changed temporarily while
+    completing by this script.
+
+0.4:
+  - The first match are selected when the popup menu is Opened. You can insert
+    the first match with CTRL-Y.
+
+0.3:
+  - Fixed the problem that the original text is not restored if 'longest' is
+    not set in 'completeopt'. Now the plugin works whether or not 'longest' is
+    set in 'completeopt', and also 'menuone'.
+
+0.2:
+  - When completion matches are not found, insert CTRL-E to stop completion.
+  - Clear the echo area.
+  - Fixed the problem in case of dividing words by symbols, popup menu is
+    not opened.
+
+0.1:
+  - First release.
+
+
+==============================================================================
+ABOUT                                   *acp-about* *acp-contact* *acp-author*
+
+Author:  Takeshi NISHIDA <ns9tks@DELETE-ME.gmail.com>
+Licence: MIT Licence
+URL:     http://www.vim.org/scripts/script.php?script_id=1879
+         http://bitbucket.org/ns9tks/vim-autocomplpop/
+
+Bugs/Issues/Suggestions/Improvements ~
+
+Please submit to http://bitbucket.org/ns9tks/vim-autocomplpop/issues/ .
+
+==============================================================================
+ vim:tw=78:ts=8:ft=help:norl:
+

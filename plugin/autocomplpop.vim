@@ -3,7 +3,7 @@
 "=============================================================================
 "
 " Author:  Takeshi NISHIDA <ns9tks@DELETE-ME.gmail.com>
-" Version: 2.6, for Vim 7.1
+" Version: 2.7, for Vim 7.1
 " Licence: MIT Licence
 " URL:     http://www.vim.org/scripts/script.php?script_id=1879
 "
@@ -122,6 +122,9 @@
 "     following items:
 "       ['command']:
 "         This is a command to be fed to open a popup menu for completion.
+"       ['completefunc']:
+"         'completefunc' will be set to this user-provided function during the
+"         completion. Only makes sense when 'command' is "\<C-x>\<C-u>".
 "       ['pattern'], ['excluded']:
 "         If a text before the cursor matches ['pattern'] and not
 "         ['excluded'], a popup menu is opened.
@@ -135,6 +138,23 @@
 "
 "-----------------------------------------------------------------------------
 " ChangeLog:
+"   2.7
+"     The following were done by Ingo Karkat:
+"
+"     - ENH: Added support for setting a user-provided 'completefunc' during the
+"       completion, configurable via g:AutoComplPop_Behavior. 
+"     - BUG: When the configured completion is <C-p> or <C-x><C-p>, the command
+"       to restore the original text (in on_popup_post()) must be reverted, too. 
+"     - BUG: When using a custom completion function (<C-x><C-u>) that also uses
+"       an s:...() function name, the s:GetSidPrefix() function dynamically
+"       determines the wrong SID. Now calling s:DetermineSidPrefix() once during
+"       sourcing and caching the value in s:SID. 
+"     - BUG: Should not use custom defined <C-X><C-...> completion mappings. 
+"       Now consistently using unmapped completion commands everywhere.
+"       (Beforehand, s:PopupFeeder.feed() used mappings via feedkeys(..., 'm'),
+"       but s:PopupFeeder.on_popup_post() did not due to its invocation via
+"       :map-expr.) 
+"
 "   2.6:
 "     - Improved the behavior of omni completion for HTML/XHTML.
 "
@@ -258,9 +278,11 @@ let loaded_autocomplpop = 1
 " FUNCTION: ============================================================= {{{1
 
 "-----------------------------------------------------------------------------
-function! s:GetSidPrefix()
-  return matchstr(expand('<sfile>'), '<SNR>\d\+_')
+function! s:DetermineSidPrefix()
+  let s:SID = matchstr(expand('<sfile>'), '<SNR>\d\+_')
 endfunction
+call s:DetermineSidPrefix()
+delfunction s:DetermineSidPrefix
 
 "-----------------------------------------------------------------------------
 function! s:GetPopupFeeder()
@@ -391,8 +413,8 @@ endfunction
 let s:PopupFeeder = { 'behavs' : [], 'lock_count' : 0 }
 "-----------------------------------------------------------------------------
 function! s:PopupFeeder.feed()
-  " NOTE: CursorMovedI is not triggered while the pupup menu is visible. And
-  "       it will be triggered when pupup menu is disappeared.
+  " NOTE: CursorMovedI is not triggered while the popup menu is visible. And
+  "       it will be triggered when popup menu is disappeared.
 
   if self.lock_count > 0 || pumvisible() || &paste
     return ''
@@ -425,11 +447,13 @@ function! s:PopupFeeder.feed()
   call s:OptionManager.set('complete', g:AutoComplPop_CompleteOption)
   call s:OptionManager.set('ignorecase', g:AutoComplPop_IgnoreCaseOption)
   call s:OptionManager.set('lazyredraw', !g:AutoComplPop_MappingDriven)
+  call s:PopupFeeder.setCompletefunc()
   " NOTE: With CursorMovedI driven, Set 'lazyredraw' to avoid flickering.
   "       With Mapping driven, set 'nolazyredraw' to make a popup menu visible.
 
   " use <Plug> for silence instead of <C-r>=
-  call feedkeys(self.behavs[0].command . "\<Plug>AutocomplpopOnPopupPost", 'm')
+  call feedkeys(self.behavs[0].command, 'n') 
+  call feedkeys("\<Plug>AutocomplpopOnPopupPost", 'm')
   return '' " for <C-r>=
 endfunction
 
@@ -454,6 +478,13 @@ function! s:PopupFeeder.unlock()
 endfunction
 
 "-----------------------------------------------------------------------------
+function! s:PopupFeeder.setCompletefunc()
+  if exists('self.behavs[0].completefunc')
+    call s:OptionManager.set('completefunc', self.behavs[0].completefunc)
+  endif
+endfunction
+
+"-----------------------------------------------------------------------------
 function! s:PopupFeeder.check_cursor_and_update()
   let prev_pos = (exists('self.last_pos') ? self.last_pos : [-1, -1, -1, -1])
   let self.last_pos = getpos('.')
@@ -470,11 +501,12 @@ endfunction
 function! s:PopupFeeder.on_popup_post()
   if pumvisible()
     " a command to restore to original text and select the first match
-    return "\<C-p>\<Down>"
+    return (self.behavs[0].command =~# "\<C-p>" ? "\<C-n>\<Up>" : "\<C-p>\<Down>")
   elseif exists('self.behavs[1]')
     call remove(self.behavs, 0)
+    call s:PopupFeeder.setCompletefunc()
     return printf("\<C-e>%s\<C-r>=%sGetPopupFeeder().on_popup_post()\<CR>",
-          \       self.behavs[0].command, s:GetSidPrefix())
+          \       self.behavs[0].command, s:SID)
   else
     call self.finish()
     return "\<C-e>"

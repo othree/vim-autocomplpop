@@ -127,7 +127,7 @@ OPTIONS                                                          *acp-options*
                                              *g:acp_behaviorKeywordCommand*  >
   let g:acp_behaviorKeywordCommand = "\<C-p>"
 <
-        Command for keyword completion. This option should be set "\<C-n>" or
+        Command for keyword completion. This option is usually set "\<C-n>" or
         "\<C-p>".
 
                                               *g:acp_behaviorKeywordLength*  >

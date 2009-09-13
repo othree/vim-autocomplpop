@@ -1,4 +1,4 @@
-*acp.txt*       Automatically offers completions when typing.
+*acp.txt*       Automatically opens popup menu for completions.
 
         Copyright (c) 2007-2009 Takeshi NISHIDA
 
@@ -9,16 +9,18 @@ INSTALLATION                    |acp-installation|
 USAGE                           |acp-usage|
 COMMANDS                        |acp-commands|
 OPTIONS                         |acp-options|
-VIMRC EXAMPLE                   |acp-vimrc-sample|
 SPECIAL THANKS                  |acp-thanks|
 CHANGELOG                       |acp-changelog|
 ABOUT                           |acp-about|
 
+
 ==============================================================================
 INTRODUCTION                                                *acp-introduction*
 
-Install this plugin and your vim comes to automatically opens the popup menu
-for completion when you enter characters or move the cursor in Insert mode.
+With this plugin, your vim comes to automatically opens popup menu for
+completions when you enter characters or move the cursor in Insert mode. It
+won't prevent you continuing entering characters.
+
 
 ==============================================================================
 INSTALLATION                                                *acp-installation*
@@ -39,128 +41,173 @@ directory, put the files into new directory and just add the directory path to
 And then update your help tags files to enable fuzzyfinder help. See
 |add-local-help| for details.
 
+
 ==============================================================================
 USAGE                                                              *acp-usage*
 
-If this plugin has been installed, the auto-popup is enabled at startup by
+If this plugin has been installed, auto-popup is enabled at startup by
 default.
 
 Which completion method is used depends on the text before the cursor. The
 default behavior is as follows:
 
-  1. The keyword completion is attempted if the text before the cursor
-     consists of two keyword character.
-  2. The filename completion is attempted if the text before the cursor
-     consists of a filename character + a path separator + 0 or more
-     filename characters.
-  3. The omni completion is attempted in Ruby file if the text before the
-     cursor consists of "." or "::". (Ruby interface is required.)
-  4. The omni completion is attempted in Python file if the text before
-     the cursor consists of ".". (Python interface is required.)
-  5. The omni completion is attempted in HTML/XHTML file if the text
-     before the cursor consists of "<" or "</".
-  6. The omni completion is attempted in CSS file if the text before the
-     cursor consists of ":", ";", "{", "@", "!", or in the start of line
-     with blank characters and keyword characters.
+  1. Keyword completion is attempted if the text before the cursor consists of
+     two keyword characters.
+  2. Filename completion is attempted if the text before the cursor consists
+     of a filename character + a path separator + 0 or more filename
+     characters.
+  3. Omni completion is attempted in Ruby file if the text before the cursor
+     consists of "." or "::". (Ruby interface is required.)
+  4. Omni completion is attempted in Python file if the text before the cursor
+     consists of ".". (Python interface is required.)
+  5. Omni completion is attempted in HTML/XHTML file if the text before the
+     cursor consists of "<" or "</".
+  6. Omni completion is attempted in CSS file if the text before the cursor
+     consists of ":", ";", "{", "@", "!", or in the start of line with blank
+     characters and keyword characters.
 
 This behavior is customizable.
-
 
 
 ==============================================================================
 COMMANDS                                                        *acp-commands*
 
+                                                                  *:AcpEnable*
 :AcpEnable
-  - makes autocommands for the auto-popup.
+        makes autocommands for auto-popup.
 
+                                                                 *:AcpDisable*
 :AcpDisable
-  - removes autocommands for the auto-popup.
+        removes autocommands for auto-popup.
 
+                                                                    *:AcpLock*
 :AcpLock
+        suspends auto-popup temporarily.
 
+        For the purpose of avoiding interruption to another script, It is
+        recommended to insert this command and *:AcpUnlock* than *:AcpDisable*
+        and *:AcpEnable* .
+
+                                                                  *:AcpUnlock*
 :AcpUnlock
+        resumes auto-popup suspended by *:AcpLock* .
 
 
 ==============================================================================
 OPTIONS                                                          *acp-options*
 
-g:acp_enableAtStartup:
-  The auto-popup is enabled at startup if non-zero is set.
+                                                    *g:acp_enableAtStartup*  >
+  let g:acp_enableAtStartup = 1
+<
+        If non-zero, auto-popup is enabled at startup.
 
-g:acp_mappingDriven:
-  The auto-popup is triggered by key mappings instead of CursorMovedI
-  event if non-zero is set. This is useful to avoid auto-popup by moving
-  cursor in Insert mode.
+                                                      *g:acp_mappingDriven*  >
+  let g:acp_mappingDriven = 0
+<
+        If non-zero, auto-popup is triggered by key mappings instead of
+        CursorMovedI event. This is useful to avoid auto-popup by moving
+        cursor in Insert mode.
 
-g:acp_ignorecaseOption
-  This is set to 'ignorecase' when the popup menu is opened.
+                                                   *g:acp_ignorecaseOption*  >
+  let g:acp_ignorecaseOption = 1
+<
+        This is set to 'ignorecase' when the popup menu is opened.
 
-g:acp_completeOption:
-  This is set to 'complete' when the popup menu is opened.
+                                                     *g:acp_completeOption*  >
+  let g:acp_completeOption = '.,w,b,k'
+<
+        This is set to 'complete' when the popup menu is opened.
 
-g:acp_completeoptPreview:
-  If non-zero is set, 'preview' is added to 'completeopt' when the popup
-  menu is opened.
+                                                 *g:acp_completeoptPreview*  >
+  let g:acp_completeoptPreview = 0
+<
+        If non-zero is set, 'preview' is added to 'completeopt' when the popup
+        menu is opened.
 
-g:acp_behaviorKeywordCommand:
-  TODO
+                                             *g:acp_behaviorKeywordCommand*  >
+  let g:acp_behaviorKeywordCommand = "\<C-p>"
+<
+        Command for keyword completion. This option should be set "\<C-n>" or
+        "\<C-p>".
 
-g:acp_behaviorKeywordLength:
-  This is the length of keyword characters before the cursor which are
-  needed to attempt the keyword completion. If negative value is set, it
-  will never attempt this completion.
+                                              *g:acp_behaviorKeywordLength*  >
+  let g:acp_behaviorKeywordLength = 2
+<
+        Length of keyword characters before the cursor, which are needed to
+        attempt the keyword completion. If negative value, it will never
+        attempt this completion.
 
-g:acp_behaviorFileLength:
-  This is the length of filename characters before the cursor which are
-  needed to attempt the filename completion. If negative value is set, it
-  will never attempt this completion.
+                                                 *g:acp_behaviorFileLength*  >
+  let g:acp_behaviorFileLength = 0
+<
+        Length of filename characters before the cursor, which are needed to
+        attempt the filename completion. If negative value, it will never
+        attempt this completion.
 
-g:acp_behaviorRubyOmniMethodLength:
-  This is the length of keyword characters before the cursor which are
-  needed to attempt the ruby omni-completion for methods. If negative
-  value is set, it will never attempt this completion.
+                                       *g:acp_behaviorRubyOmniMethodLength*  >
+  let g:acp_behaviorRubyOmniMethodLength = 0
+<
+        Length of keyword characters before the cursor, which are needed to
+        attempt the ruby omni-completion for methods. If negative value, it
+        will never attempt this completion.
 
-g:acp_behaviorRubyOmniSymbolLength:
-  This is the length of keyword characters before the cursor which are
-  needed to attempt the ruby omni-completion for symbols. If negative
-  value is set, it will never attempt this completion.
+                                       *g:acp_behaviorRubyOmniSymbolLength*  >
+  let g:acp_behaviorRubyOmniSymbolLength = 1
+<
+        Length of keyword characters before the cursor, which are needed to
+        attempt the ruby omni-completion for symbols. If negative value, it
+        will never attempt this completion.
 
-g:acp_behaviorPythonOmniLength:
-  This is the length of keyword characters before the cursor which are
-  needed to attempt the python omni-completion. If negative value is set,
-  it will never attempt this completion.
+                                           *g:acp_behaviorPythonOmniLength*  >
+  let g:acp_behaviorPythonOmniLength = 0
+<
+        Length of keyword characters before the cursor, which are needed to
+        attempt the python omni-completion. If negative value, it will never
+        attempt this completion.
 
-g:acp_behaviorHtmlOmniLength:
-  This is the length of keyword characters before the cursor which are
-  needed to attempt the HTML omni-completion. If negative value is set, it
-  will never attempt this completion.
+                                             *g:acp_behaviorHtmlOmniLength*  >
+  let g:acp_behaviorHtmlOmniLength = 0
+<
+        Length of keyword characters before the cursor, which are needed to
+        attempt the HTML omni-completion. If negative value, it will never
+        attempt this completion.
 
-g:acp_behaviorCssOmniPropertyLength:
-  This is the length of keyword characters before the cursor which are
-  needed to attempt the CSS omni-completion for properties. If negative
-  value is set, it will never attempt this completion.
+                                      *g:acp_behaviorCssOmniPropertyLength*  >
+  let g:acp_behaviorCssOmniPropertyLength = 1
+<
+        Length of keyword characters before the cursor, which are needed to
+        attempt the CSS omni-completion for properties. If negative value, it
+        will never attempt this completion.
 
-g:acp_behaviorCssOmniValueLength:
-  This is the length of keyword characters before the cursor which are
-  needed to attempt the CSS omni-completion for values. If negative value
-  is set, it will never attempt this completion.
+                                         *g:acp_behaviorCssOmniValueLength*  >
+  let g:acp_behaviorCssOmniValueLength = 0
+<
+        Length of keyword characters before the cursor, which are needed to
+        attempt the CSS omni-completion for values. If negative value, it will
+        never attempt this completion.
 
-g:acp_behavior:
-  This option is for advanced users. This setting overrides other behavior
-  options. This is a dictionary. Each key corresponds to a filetype. '*'
-  is default. Each value is a list. These are attempted in sequence until
-  completion item is found. Each element is a dictionary which has
-  following items:
-    ['command']:
-      This is a command to be fed to open a popup menu for completion.
-    ['completefunc']:
-      'completefunc' will be set to this user-provided function during the
-      completion. Only makes sense when 'command' is "\<C-x>\<C-u>".
-    ['pattern'], ['excluded']:
-      If a text before the cursor matches ['pattern'] and not
-      ['excluded'], a popup menu is opened.
-    ['repeat']:
-      It automatically repeats a completion if non-zero is set.
+                                                           *g:acp_behavior*  >
+  let g:acp_behavior = {}
+<
+        This option is for advanced users. This setting overrides other
+        behavior options. This is a dictionary. Each key corresponds to a
+        filetype. '*' is default. Each value is a list. These are attempted in
+        sequence until completion item is found. Each element is a dictionary
+        which has following items:
+
+        ['command']:
+          Command to be fed to open popup menu for completions.
+
+        ['completefunc']:
+          'completefunc' will be set to this user-provided function during the
+          completion. Only makes sense when 'command' is "\<C-x>\<C-u>".
+
+        ['pattern'], ['excluded']:
+          If a text before the cursor matches ['pattern'] and not
+          ['excluded'], popup menu is opened.
+
+        ['repeat']:
+          If non-zero, the last completion is automatically repeated.
 
 
 ==============================================================================
@@ -174,7 +221,8 @@ SPECIAL THANKS                                                    *acp-thanks*
 CHANGELOG                                                      *acp-changelog*
 
 2.7
-  - TODO
+  - Changed naming conventions for filenames, functions, commands, and options 
+    and thus renamed them.
   - Added g:acp_behaviorKeywordCommand option. If you prefer the previous
     behavior for keyword completion, set this option "\<C-n>".
   - Changed default value of g:acp_ignorecaseOption option.

@@ -140,6 +140,23 @@ function s:disable()
 endfunction
 
 "
+let s:lockCount = 0
+
+"
+function s:lock()
+  let s:lockCount += 1
+endfunction
+
+"
+function s:unlock()
+  let s:lockCount -= 1
+  if s:lockCount < 0
+    let s:lockCount = 0
+    throw "autocomplpop.vim: not locked"
+  endif
+endfunction
+
+"
 function s:mapForMappingDriven()
   call s:unmapForMappingDriven()
   let s:keysMappingDriven = [
@@ -185,9 +202,6 @@ function s:restoreTempOptionAll()
 endfunction
 
 "
-let s:lockCount = 0
-
-"
 function s:matchesBehavior(text, behav)
   return a:text =~ a:behav.pattern &&
         \ (!exists('a:behav.excluded') || a:text !~ a:behav.excluded)
@@ -210,21 +224,6 @@ function s:isCursorMovedSinceLastCall()
 endfunction
 
 "
-function s:determineBehavs(behavsLast, cursorMoved)
-  if exists('a:behavLast[0].repeat') && a:behavLast[0].repeat
-    let behavs = [ a:behavLast[0] ]
-  elseif a:cursorMoved 
-    let behavs = copy(exists('g:acp_behavior[&filetype]')
-          \           ? g:acp_behavior[&filetype]
-          \           : g:acp_behavior['*'])
-  else
-    return []
-  endif
-  let text = strpart(getline('.'), 0, col('.') - 1)
-  return filter(behavs, 's:matchesBehavior(text, v:val)')
-endfunction
-
-"
 let s:behavsCurrent = []
 
 "
@@ -234,15 +233,25 @@ function s:feedPopup()
   if s:lockCount > 0 || pumvisible() || &paste
     return ''
   endif
-  let s:behavsCurrent =
-        \ s:determineBehavs(s:behavsCurrent, s:isCursorMovedSinceLastCall())
+  let cursorMoved = s:isCursorMovedSinceLastCall()
+  if exists('s:behavsCurrent[0].repeat') && s:behavsCurrent[0].repeat
+    let s:behavsCurrent = [ s:behavsCurrent[0] ]
+  elseif cursorMoved
+    let s:behavsCurrent = copy(exists('g:acp_behavior[&filetype]')
+          \                    ? g:acp_behavior[&filetype]
+          \                    : g:acp_behavior['*'])
+  else
+    let s:behavsCurrent = []
+  endif
+  let text = strpart(getline('.'), 0, col('.') - 1)
+  call filter(s:behavsCurrent, 's:matchesBehavior(text, v:val)')
   if empty(s:behavsCurrent)
     call s:finishPopup()
     return ''
   endif
-  " In case of dividing words by symbols while a popup menu is visible,
-  " popup is not available unless input <C-e> or try popup once.
-  " (E.g. "for(int", "ab==cd") So duplicates first completion.
+  " In case of dividing words by symbols (e.g. "for(int", "ab==cd") while a
+  " popup menu is visible, another popup is not available unless input <C-e>
+  " or try popup once. So first completion is duplicated.
   call insert(s:behavsCurrent, s:behavsCurrent[0])
   call s:setTempOption('completeopt', 'menuone' . (g:acp_completeoptPreview ? ',preview' : ''))
   call s:setTempOption('complete', g:acp_completeOption)
@@ -260,20 +269,6 @@ endfunction
 function s:finishPopup()
   let s:behavsCurrent = []
   call s:restoreTempOptionAll()
-endfunction
-
-"
-function s:lockPopupFeed()
-  let s:lockCount += 1
-endfunction
-
-"
-function s:unlockPopupFeed()
-  let s:lockCount -= 1
-  if s:lockCount < 0
-    let s:lockCount = 0
-    throw "autocomplpop.vim: not locked"
-  endif
 endfunction
 
 "
@@ -331,8 +326,14 @@ call extend(g:acp_behavior, s:makeDefaultBehavior(), 'keep')
 "-----------------------------------------------------------------------------
 command! -bar -narg=0 AcpEnable  call s:enable()
 command! -bar -narg=0 AcpDisable call s:disable()
-command! -bar -narg=0 AcpLock    call s:lockPopupFeed()
-command! -bar -narg=0 AcpUnlock  call s:unlockPopupFeed()
+command! -bar -narg=0 AcpLock    call s:lock()
+command! -bar -narg=0 AcpUnlock  call s:unlock()
+"-----------------------------------------------------------------------------
+" legacy commands
+command! -bar -narg=0 AutoComplPopEnable  AcpEnable
+command! -bar -narg=0 AutoComplPopDisable AcpDisable
+command! -bar -narg=0 AutoComplPopLock    AcpLock
+command! -bar -narg=0 AutoComplPopUnlock  AcpUnlock
 "-----------------------------------------------------------------------------
 inoremap <silent> <expr> <Plug>AcpOnPopupPost <SID>onPopupPost()
 "-----------------------------------------------------------------------------

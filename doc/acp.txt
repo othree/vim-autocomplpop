@@ -215,6 +215,9 @@ SPECIAL THANKS                                                    *acp-thanks*
 ==============================================================================
 CHANGELOG                                                      *acp-changelog*
 
+2.7.1 (or 2.8)
+  - Fixed a bug that setting 'spell' on a new buffer made typing go crazy.
+
 2.7
   - Changed naming conventions for filenames, functions, commands, and options 
     and thus renamed them.

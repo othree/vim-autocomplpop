@@ -253,6 +253,7 @@ function s:feedPopup()
   " popup menu is visible, another popup is not available unless input <C-e>
   " or try popup once. So first completion is duplicated.
   call insert(s:behavsCurrent, s:behavsCurrent[0])
+  call s:setTempOption('spell', 0)
   call s:setTempOption('completeopt', 'menuone' . (g:acp_completeoptPreview ? ',preview' : ''))
   call s:setTempOption('complete', g:acp_completeOption)
   call s:setTempOption('ignorecase', g:acp_ignorecaseOption)

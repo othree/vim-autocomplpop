@@ -30,6 +30,7 @@ function s:makeDefaultBehavior()
         \   'html'   : [],
         \   'xhtml'  : [],
         \   'css'    : [],
+        \   'xml'    : [],
         \ }
   "---------------------------------------------------------------------------
   if !empty(g:acp_behaviorUserDefinedFunction)
@@ -121,6 +122,15 @@ function s:makeDefaultBehavior()
           \ })
   endif
   "---------------------------------------------------------------------------
+  if g:acp_behaviorXmlOmniLength >= 0
+    call add(behavs.xml, {
+          \   'command' : "\<C-x>\<C-o>",
+          \   'pattern' : printf('\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{%d,}$',
+          \                      g:acp_behaviorXmlOmniLength),
+          \   'repeat'  : 0,
+          \ })
+  endif
+  "---------------------------------------------------------------------------
   return behavs
 endfunction
 
@@ -145,6 +155,7 @@ call s:defineOption('g:acp_behaviorPythonOmniLength', 0)
 call s:defineOption('g:acp_behaviorHtmlOmniLength', 0)
 call s:defineOption('g:acp_behaviorCssOmniPropertyLength', 1)
 call s:defineOption('g:acp_behaviorCssOmniValueLength', 0)
+call s:defineOption('g:acp_behaviorXmlOmniLength', 0)
 call s:defineOption('g:acp_behavior', {})
 "-----------------------------------------------------------------------------
 call extend(g:acp_behavior, s:makeDefaultBehavior(), 'keep')

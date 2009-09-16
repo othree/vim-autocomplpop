@@ -195,6 +195,13 @@ OPTIONS                                                          *acp-options*
         attempt CSS omni-completion for values. If negative value, this
         completion will be never attempted.
 
+                                              *g:acp_behaviorXmlOmniLength*  >
+  let g:acp_behaviorXmlOmniLength = 0
+<
+        Length of keyword characters before a cursor, which are needed to
+        attempt XML omni-completion. If negative value, this completion will
+        be never attempted.
+
                                                            *g:acp_behavior*  >
   let g:acp_behavior = {}
 <
@@ -228,6 +235,9 @@ SPECIAL THANKS                                                    *acp-thanks*
 
 ==============================================================================
 CHANGELOG                                                      *acp-changelog*
+
+2.9
+  - Changed default behavior to support XML omni completion.
 
 2.8.1
   - Fixed a bug which inserted a selected match to the next line when

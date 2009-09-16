@@ -183,6 +183,12 @@ ZIPファイルをランタイムディレクトリに展開します。
         値補完のための、CSS オムニ補完の自動ポップアップを行うのに必要なカーソ
         ルの直前のキーワード文字数。負数ならこの補完は行いません。
 
+                                              *g:acp_behaviorXmlOmniLength*  >
+  let g:acp_behaviorXmlOmniLength = 0
+<
+        XML オムニ補完の自動ポップアップを行うのに必要なカーソルの直前のキーワ
+        ード文字数。負数ならこの補完は行いません。
+
                                                            *g:acp_behavior*  >
   let g:acp_behavior = {}
 <

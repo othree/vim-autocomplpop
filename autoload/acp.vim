@@ -63,8 +63,8 @@ endfunction
 function acp#onPopupPost()
   if pumvisible()
     " a command to restore to original text and select the first match
-    return (s:behavsCurrent[0].command =~# "\<C-p>" ? "\<C-n>\<Up>"
-          \                                         : "\<C-p>\<Down>")
+    return (s:behavsCurrent[0].backward ? "\<C-p>\<Up>"
+          \                             : "\<C-p>\<Down>")
   elseif exists('s:behavsCurrent[1]')
     call remove(s:behavsCurrent, 0)
     call s:setCompletefunc()

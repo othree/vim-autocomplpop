@@ -241,6 +241,7 @@ CHANGELOG                                                      *acp-changelog*
   - Changed default value of g:acp_behaviorKeywordCommand option.
     The option with "\<C-p>" cause a problem which inserts a match without
     <CR> when 'dictionary' has been set and keyword completion is done.
+  - Changed to show error message when incompatible with a installed vim.
 
 2.8.1
   - Fixed a bug which inserted a selected match to the next line when

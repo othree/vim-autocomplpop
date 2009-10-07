@@ -5,7 +5,10 @@
 "=============================================================================
 " LOAD GUARD {{{1
 
-if exists('g:loaded_acp') || v:version < 702
+if exists('g:loaded_acp')
+  finish
+elseif v:version < 702
+  echoerr 'AutoComplPop does not support this version of vim (' . v:version . ').'
   finish
 endif
 let g:loaded_acp = 1

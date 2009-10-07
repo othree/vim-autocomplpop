@@ -134,7 +134,7 @@ OPTIONS                                                          *acp-options*
         completion.
 
                                              *g:acp_behaviorKeywordCommand*  >
-  let g:acp_behaviorKeywordCommand = "\<C-p>"
+  let g:acp_behaviorKeywordCommand = "\<C-n>"
 <
         Command for keyword completion. This option is usually set "\<C-n>" or
         "\<C-p>".
@@ -238,6 +238,9 @@ CHANGELOG                                                      *acp-changelog*
 
 2.9
   - Changed default behavior to support XML omni completion.
+  - Changed default value of g:acp_behaviorKeywordCommand option.
+    The option with "\<C-p>" cause a problem which inserts a match without
+    <CR> when 'dictionary' has been set and keyword completion is done.
 
 2.8.1
   - Fixed a bug which inserted a selected match to the next line when

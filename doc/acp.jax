@@ -130,7 +130,7 @@ ZIPファイルをランタイムディレクトリに展開します。
         ーン。
 
                                              *g:acp_behaviorKeywordCommand*  >
-  let g:acp_behaviorKeywordCommand = "\<C-p>"
+  let g:acp_behaviorKeywordCommand = "\<C-n>"
 <
         キーワード補完のコマンド。このオプションには普通 "\<C-n>" か "\<C-p>"
         を設定します。

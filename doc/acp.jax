@@ -118,26 +118,22 @@ ZIPファイルをランタイムディレクトリに展開します。
 <
         真なら自動ポップアップ時に、 'completeopt' へ "preview" を追加します。
 
-                                        *g:acp_behaviorUserDefinedFunction*  >
+                                             *g:acp_behaviorUserDefinedFunction*  >
   let g:acp_behaviorUserDefinedFunction = ''
 <
         ユーザー定義補完の関数。空ならこの補完は行いません。
 
-        See also:|complete-functions|
-
-                                         *g:acp_behaviorUserDefinedPattern*  >
+                                             *g:acp_behaviorUserDefinedPattern*  >
   let g:acp_behaviorUserDefinedPattern = '\k$'
 <
         ユーザー定義補完の自動ポップアップを行うのに必要なカーソルの直前のパタ
         ーン。
 
-                                            *g:acp_behaviorKeywordBackward*  >
-  let g:acp_behaviorKeywordBackward = 1
+                                             *g:acp_behaviorKeywordCommand*  >
+  let g:acp_behaviorKeywordCommand = "\<C-p>"
 <
-        真なら前方でマッチした補完候補を最初に選択します。さもなければ後方でマ
-        ッチした補完候補を最初に選択します。
-
-        see also: |i_CTRL-N| |i_CTRL-P|
+        キーワード補完のコマンド。このオプションには普通 "\<C-n>" か "\<C-p>"
+        を設定します。
 
                                               *g:acp_behaviorKeywordLength*  >
   let g:acp_behaviorKeywordLength = 2
@@ -206,10 +202,6 @@ ZIPファイルをランタイムディレクトリに展開します。
 
         "command":
           補完メニューをポップアップするためのコマンド。
-
-        "backward":
-          真なら補完メニューの最後のアイテムが最初に選択します。さもなければ最
-          初のアイテムが最初に選択されます。
 
         "completefunc":
           'completefunc' に設定する関数。 "command" が "<C-x><C-u>" のときだけ

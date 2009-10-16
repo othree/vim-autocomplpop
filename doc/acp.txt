@@ -58,6 +58,7 @@ default behavior is as follows:
         Omni      ruby        ".", "::" or non-word character + ":"
                               (|+ruby| required.)
         Omni      python      "." (|+python| required.)
+        Omni      xml         "<", "</" or ("<" + non-">" characters + " ")
         Omni      html/xhtml  "<", "</" or ("<" + non-">" characters + " ")
         Omni      css         (":", ";", "{", "^", "@", or "!")
                               + 0 or 1 space
@@ -174,6 +175,13 @@ OPTIONS                                                          *acp-options*
         attempt python omni-completion. If negative value, this completion
         will be never attempted.
 
+                                              *g:acp_behaviorXmlOmniLength*  >
+  let g:acp_behaviorXmlOmniLength = 0
+<
+        Length of keyword characters before a cursor, which are needed to
+        attempt XML omni-completion. If negative value, this completion will
+        be never attempted.
+
                                              *g:acp_behaviorHtmlOmniLength*  >
   let g:acp_behaviorHtmlOmniLength = 0
 <
@@ -194,13 +202,6 @@ OPTIONS                                                          *acp-options*
         Length of keyword characters before a cursor, which are needed to
         attempt CSS omni-completion for values. If negative value, this
         completion will be never attempted.
-
-                                              *g:acp_behaviorXmlOmniLength*  >
-  let g:acp_behaviorXmlOmniLength = 0
-<
-        Length of keyword characters before a cursor, which are needed to
-        attempt XML omni-completion. If negative value, this completion will
-        be never attempted.
 
                                                            *g:acp_behavior*  >
   let g:acp_behavior = {}

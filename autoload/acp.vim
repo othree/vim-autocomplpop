@@ -62,6 +62,8 @@ endfunction
 "
 function acp#onPopupPost()
   if pumvisible()
+    inoremap <silent> <expr> <C-h> acp#onBs()
+    inoremap <silent> <expr> <BS>  acp#onBs()
     " a command to restore to original text and select the first match
     return (s:behavsCurrent[0].command =~# "\<C-p>" ? "\<C-n>\<Up>"
           \                                         : "\<C-p>\<Down>")
@@ -74,6 +76,17 @@ function acp#onPopupPost()
     call s:finishPopup(0)
     return "\<C-e>"
   endif
+endfunction
+
+"
+function acp#onBs()
+  " not using "col('.') - 2" but "matchstr" in order to handle multi-byte
+  " characters
+  let text = matchstr(strpart(getline('.'), 0, col('.') - 1), '.*\ze.')
+  if s:matchesBehavior(text, s:behavsCurrent[0])
+    return "\<BS>"
+  endif
+  return "\<C-e>\<BS>"
 endfunction
 
 " }}}1
@@ -188,6 +201,8 @@ endfunction
 
 "
 function s:finishPopup(fGroup1)
+  inoremap <C-h> <Nop> | iunmap <C-h>
+  inoremap <BS>  <Nop> | iunmap <BS>
   let s:behavsCurrent = []
   call s:restoreTempOptions(s:GROUP0)
   if a:fGroup1

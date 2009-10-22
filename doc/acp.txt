@@ -70,7 +70,9 @@ These behavior are customizable.
 snipMate's Trigger Completion ~
 
 snipMate's trigger completion enables you to complete a snippet trigger
-provided by snipMate plugin and expand it.
+provided by snipMate plugin
+(http://www.vim.org/scripts/script.php?script_id=2540) and expand it.
+
 
 To enable auto-popup for this completion, add following function to
 plugin/snipMate.vim:
@@ -267,7 +269,7 @@ SPECIAL THANKS                                                    *acp-thanks*
 CHANGELOG                                                      *acp-changelog*
 
 2.11
-  - Implemented snipMate's trigger completion.
+  - Implemented experimental feature which is snipMate's trigger completion.
 
 2.10
   - Improved the response by changing not to attempt any completion when

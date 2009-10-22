@@ -69,12 +69,12 @@ ZIPファイルをランタイムディレクトリに展開します。
                                                                 *acp-snipMate*
 snipMate トリガー補完 ~
 
-TODO
-snipMate トリガー補完では、snipMate が提供するスニペットのトリガーを補完してそ
-れを展開することができます。
+snipMate トリガー補完では、snipMate プラグイン
+(http://www.vim.org/scripts/script.php?script_id=2540) が提供するスニペットの
+トリガーを補完してそれを展開することができます。
 
-この自動ポップアップを有効にするには、次の関数を plugin/snipMate.vim に追加し
-てください:
+この自動ポップアップを有効にするには、次の関数を plugin/snipMate.vim に追加す
+る必要があります:
 >
   fun! GetSnipsInCurrentScope()
     let snips = {}

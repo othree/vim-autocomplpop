@@ -50,16 +50,17 @@ Once this plugin is installed, auto-popup is enabled at startup by default.
 Which completion method is used depends on the text before the cursor. The
 default behavior is as follows:
 
-        kind         filetype    text before a cursor ~
-        Keyword      *           two keyword characters
-        Filename     *           a filename character + a path separator 
-                                 + 0 or more filename character
-        Omni         ruby        ".", "::" or non-word character + ":"
-                                 (|+ruby| required.)
-        Omni         python      "." (|+python| required.)
-        Omni         xml         "<", "</" or ("<" + non-">" characters + " ")
-        Omni         html/xhtml  "<", "</" or ("<" + non-">" characters + " ")
-        Omni         css         (":", ";", "{", "^", "@", or "!") + 0 or 1 space
+        kind      filetype    text before a cursor ~
+        Keyword   *           two keyword characters
+        Filename  *           a filename character + a path separator 
+                              + 0 or more filename character
+        Omni      ruby        ".", "::" or non-word character + ":"
+                              (|+ruby| required.)
+        Omni      python      "." (|+python| required.)
+        Omni      xml         "<", "</" or ("<" + non-">" characters + " ")
+        Omni      html/xhtml  "<", "</" or ("<" + non-">" characters + " ")
+        Omni      css         (":", ";", "{", "^", "@", or "!")
+                              + 0 or 1 space
 
 Also, you can make user-defined completion and snipMate's trigger completion
 (|acp-snipMate|) auto-popup if the options are set.

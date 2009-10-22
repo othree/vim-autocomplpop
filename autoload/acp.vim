@@ -19,7 +19,7 @@ function acp#enable()
 
   augroup AcpGlobalAutoCommand
     autocmd!
-    autocmd InsertEnter * unlet! s:posLast
+    autocmd InsertEnter * unlet! s:posLast s:lastUncompletableWord
     autocmd InsertLeave * call s:finishPopup(1)
   augroup END
 
@@ -73,17 +73,28 @@ function acp#onPopupPost()
     return printf("\<C-e>%s\<C-r>=acp#onPopupPost()\<CR>",
           \       s:behavsCurrent[0].command)
   else
+    let s:lastUncompletableWord = s:getCurrentWord()
     call s:finishPopup(0)
     return "\<C-e>"
   endif
 endfunction
 
 "
+function s:getCurrentWord()
+  return matchstr(s:getCurrentText(), '\k*$')
+endfunction
+
+"
+function s:getCurrentText()
+  return strpart(getline('.'), 0, col('.') - 1)
+endfunction
+
+"
 function acp#onBs()
-  " not using "col('.') - 2" but "matchstr" in order to handle multi-byte
+  " using "matchstr" and not "strpart" in order to handle multi-byte
   " characters
-  let text = matchstr(strpart(getline('.'), 0, col('.') - 1), '.*\ze.')
-  if s:matchesBehavior(text, s:behavsCurrent[0])
+  if s:matchesBehavior(matchstr(s:getCurrentText(), '.*\ze.'),
+        \              s:behavsCurrent[0])
     return "\<BS>"
   endif
   return "\<C-e>\<BS>"
@@ -174,8 +185,14 @@ function s:feedPopup()
   else
     let s:behavsCurrent = []
   endif
-  let text = strpart(getline('.'), 0, col('.') - 1)
-  call filter(s:behavsCurrent, 's:matchesBehavior(text, v:val)')
+  if exists('s:lastUncompletableWord') &&
+        \ stridx(s:getCurrentWord(), s:lastUncompletableWord) == 0
+    let s:behavsCurrent = []
+  else
+    unlet! s:lastUncompletableWord
+    let text = s:getCurrentText()
+    call filter(s:behavsCurrent, 's:matchesBehavior(text, v:val)')
+  endif
   if empty(s:behavsCurrent)
     call s:finishPopup(1)
     return ''

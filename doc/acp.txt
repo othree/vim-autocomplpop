@@ -269,6 +269,10 @@ SPECIAL THANKS                                                    *acp-thanks*
 ==============================================================================
 CHANGELOG                                                      *acp-changelog*
 
+2.11.1
+  - Fixed a bug that a snipMate's trigger could not be expanded when it was
+    completed.
+
 2.11
   - Implemented experimental feature which is snipMate's trigger completion.
 

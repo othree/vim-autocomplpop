@@ -154,11 +154,10 @@ OPTIONS                                                          *acp-options*
 
         See also:|complete-functions|
 
-                                         *g:acp_behaviorUserDefinedPattern*  >
-  let g:acp_behaviorUserDefinedPattern = '\k$'
+                                         *g:acp_behaviorUserDefinedRequire*  >
+  let g:acp_behaviorUserDefinedRequire = ''
 <
-        Pattern before a cursor, which are needed to attempt user-defined
-        completion.
+        TODO
 
                                              *g:acp_behaviorSnipmateLength*  >
   let g:acp_behaviorSnipmateLength = -1
@@ -251,9 +250,8 @@ OPTIONS                                                          *acp-options*
           'completefunc' will be set to this user-provided function during the
           completion. Only makes sense when "command" is "<C-x><C-u>".
 
-        "pattern", "exclude":
-          If a text before a cursor matches "pattern" and not "exclude", popup
-          menu is opened.
+        "require":
+          TODO
 
         "repeat":
           If non-zero, the last completion is automatically repeated.
@@ -268,6 +266,10 @@ SPECIAL THANKS                                                    *acp-thanks*
 
 ==============================================================================
 CHANGELOG                                                      *acp-changelog*
+
+2.11.2
+  - Fixed a bug that keyword completion was never attempted when
+    no candidate for snipMate's trigger completion was found.
 
 2.11.1
   - Fixed a bug that a snipMate's trigger could not be expanded when it was

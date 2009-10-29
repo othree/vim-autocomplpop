@@ -60,6 +60,83 @@ function acp#unlock()
 endfunction
 
 "
+function acp#requireForSnipmate(context)
+  if g:acp_behaviorSnipmateLength < 0
+    return 0
+  endif
+  let matches = matchlist(a:context, '\(^\|\s\|\<\)\(\u\{' .
+        \                            g:acp_behaviorSnipmateLength . ',}\)$')
+  return !empty(matches) && !empty(s:getMatchingSnipItems(matches[2]))
+endfunction
+
+"
+function acp#requireForKeyword(context)
+  return g:acp_behaviorKeywordLength >= 0 &&
+        \ a:context =~ '\k\{' . g:acp_behaviorKeywordLength . ',}$'
+endfunction
+
+"
+function acp#requireForFile(context)
+  if g:acp_behaviorFileLength < 0
+    return 0
+  endif
+  if has('win32') || has('win64')
+    let separator = '[/\\]'
+  else
+    let separator = '\/'
+  endif
+  if a:context !~ '\f' . separator . '\f\{' . g:acp_behaviorFileLength . ',}$'
+    return 0
+  endif
+  return a:context !~ '[*/\\][/\\]\f*$\|[^[:print:]]\f*$'
+endfunction
+
+"
+function acp#requireForRubyOmni(context)
+  if !has('ruby')
+    return 0
+  endif
+  if g:acp_behaviorRubyOmniMethodLength >= 0 &&
+        \ a:context =~ '[^. \t]\(\.\|::\)\k\{' .
+        \              g:acp_behaviorRubyOmniMethodLength . ',}$'
+    return 1
+  endif
+  if g:acp_behaviorRubyOmniSymbolLength >= 0 &&
+        \ a:context =~ '\(^\|[^:]\):\k\{' .
+        \              g:acp_behaviorRubyOmniSymbolLength . ',}$'
+    return 1
+  endif
+  return 0
+endfunction
+
+"
+function acp#requireForPythonOmni(context)
+  return has('python') &&
+        \ a:context =~ '\k\.\k\{' . g:acp_behaviorPythonOmniLength . ',}$'
+endfunction
+
+"
+function acp#requireForXmlOmni(context)
+  return a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .
+        \             g:acp_behaviorXmlOmniLength . ',}$'
+endfunction
+
+"
+function acp#requireForCssOmni(context)
+  if g:acp_behaviorCssOmniPropertyLength >= 0 &&
+        \ a:context =~ '\(^\s\|[;{]\)\s*\k\{' .
+        \              g:acp_behaviorCssOmniPropertyLength . ',}$'
+    return 1
+  endif
+  if g:acp_behaviorCssOmniValueLength >= 0 &&
+        \ a:context =~ '[:@!]\s*\k\{' .
+        \              g:acp_behaviorCssOmniValueLength . ',}$'
+    return 1
+  endif
+  return 0
+endfunction
+
+"
 function acp#completeSnipmate(findstart, base)
   if a:findstart
     return len(matchstr(s:getCurrentText(), '.*\U'))
@@ -77,7 +154,6 @@ function acp#onPopupCloseSnipmate()
   for trigger in keys(GetSnipsInCurrentScope())
     let lenTrigger = len(trigger)
     if lenText >= lenTrigger && strridx(text, trigger) + lenTrigger == lenText
-      let g:i = text . '|' . trigger
       call feedkeys("\<C-r>=TriggerSnippet()\<CR>", "n")
       return 0
     endif
@@ -174,8 +250,7 @@ endfunction
 
 "
 function s:matchesBehavior(text, behav)
-  return a:text =~ a:behav.pattern &&
-        \ (!exists('a:behav.exclude') || a:text !~ a:behav.exclude)
+  return call(a:behav.require, [a:text])
 endfunction
 
 "
@@ -202,7 +277,7 @@ function s:feedPopup()
     return ''
   endif
   if exists('s:behavsCurrent[0].onPopupClose')
-    if !function(s:behavsCurrent[0].onPopupClose)()
+    if !call(s:behavsCurrent[0].onPopupClose, [])
       call s:finishPopup(1)
       return ''
     endif
@@ -269,14 +344,26 @@ endfunction
 "
 function s:makeSnipmateItem(key, snip)
   if type(a:snip) == type([])
-    let snipFormatted = '[multi snip]'
+    let descriptions = map(copy(a:snip), 'v:val[0]')
+    let snipFormatted = '[MULTI] ' . join(descriptions, ', ')
   else
-    let snipFormatted = strpart(substitute(a:snip, '\(\n\|\s\)\+', ' ', 'g'), 0, 80)
+    let snipFormatted = substitute(a:snip, '\(\n\|\s\)\+', ' ', 'g')
   endif
   return  {
         \   'word': a:key,
-        \   'menu': snipFormatted,
+        \   'menu': strpart(snipFormatted, 0, 80),
         \ }
+endfunction
+
+"
+function s:getMatchingSnipItems(base)
+  let key = a:base . "\n"
+  if !exists('s:snipItems[key]')
+    let s:snipItems[key] = items(GetSnipsInCurrentScope())
+    call filter(s:snipItems[key], 'strpart(v:val[0], 0, len(a:base)) ==? a:base')
+    call map(s:snipItems[key], 's:makeSnipmateItem(v:val[0], v:val[1])')
+  endif
+  return s:snipItems[key]
 endfunction
 
 " }}}1
@@ -288,6 +375,7 @@ let s:GROUP1 = 1
 let s:lockCount = 0
 let s:behavsCurrent = []
 let s:tempOptionSet = [{}, {}]
+let s:snipItems = {}
 
 inoremap <silent> <expr> <Plug>AcpOnPopupPost acp#onPopupPost()
 

@@ -60,7 +60,7 @@ function acp#unlock()
 endfunction
 
 "
-function acp#requireForSnipmate(context)
+function acp#meetsForSnipmate(context)
   if g:acp_behaviorSnipmateLength < 0
     return 0
   endif
@@ -70,13 +70,24 @@ function acp#requireForSnipmate(context)
 endfunction
 
 "
-function acp#requireForKeyword(context)
-  return g:acp_behaviorKeywordLength >= 0 &&
-        \ a:context =~ '\k\{' . g:acp_behaviorKeywordLength . ',}$'
+function acp#meetsForKeyword(context)
+  if g:acp_behaviorKeywordLength < 0
+    return 0
+  endif
+  let matches = matchlist(a:context, '\(\k\{' . g:acp_behaviorKeywordLength . ',}\)$')
+  if empty(matches)
+    return 0
+  endif
+  for ignore in g:acp_behaviorKeywordIgnores
+    if stridx(ignore, matches[1]) == 0
+      return 0
+    endif
+  endfor
+  return 1
 endfunction
 
 "
-function acp#requireForFile(context)
+function acp#meetsForFile(context)
   if g:acp_behaviorFileLength < 0
     return 0
   endif
@@ -92,7 +103,7 @@ function acp#requireForFile(context)
 endfunction
 
 "
-function acp#requireForRubyOmni(context)
+function acp#meetsForRubyOmni(context)
   if !has('ruby')
     return 0
   endif
@@ -110,19 +121,25 @@ function acp#requireForRubyOmni(context)
 endfunction
 
 "
-function acp#requireForPythonOmni(context)
+function acp#meetsForPythonOmni(context)
   return has('python') &&
         \ a:context =~ '\k\.\k\{' . g:acp_behaviorPythonOmniLength . ',}$'
 endfunction
 
 "
-function acp#requireForXmlOmni(context)
+function acp#meetsForXmlOmni(context)
   return a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .
         \             g:acp_behaviorXmlOmniLength . ',}$'
 endfunction
 
 "
-function acp#requireForCssOmni(context)
+function acp#meetsForHtmlOmni(context)
+  return a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .
+        \             g:acp_behaviorHtmlOmniLength . ',}$'
+endfunction
+
+"
+function acp#meetsForCssOmni(context)
   if g:acp_behaviorCssOmniPropertyLength >= 0 &&
         \ a:context =~ '\(^\s\|[;{]\)\s*\k\{' .
         \              g:acp_behaviorCssOmniPropertyLength . ',}$'
@@ -185,8 +202,7 @@ endfunction
 function acp#onBs()
   " using "matchstr" and not "strpart" in order to handle multi-byte
   " characters
-  if s:matchesBehavior(matchstr(s:getCurrentText(), '.*\ze.'),
-        \              s:behavsCurrent[0])
+  if call(s:behavsCurrent[0].meets, [matchstr(s:getCurrentText(), '.*\ze.')])
     return "\<BS>"
   endif
   return "\<C-e>\<BS>"
@@ -249,11 +265,6 @@ function s:getCurrentText()
 endfunction
 
 "
-function s:matchesBehavior(text, behav)
-  return call(a:behav.require, [a:text])
-endfunction
-
-"
 function s:isCursorMovedSinceLastCall()
   if exists('s:posLast')
     let posPrev = s:posLast
@@ -298,7 +309,7 @@ function s:feedPopup()
   else
     unlet! s:lastUncompletableWord
     let text = s:getCurrentText()
-    call filter(s:behavsCurrent, 's:matchesBehavior(text, v:val)')
+    call filter(s:behavsCurrent, 'call(v:val.meets, [text])')
   endif
   if empty(s:behavsCurrent)
     call s:finishPopup(1)

@@ -80,12 +80,6 @@ function s:makeDefaultBehavior()
         \   'repeat'  : 0,
         \ })
   "---------------------------------------------------------------------------
-  call add(behavs.ruby, {
-        \   'command' : "\<C-x>\<C-o>",
-        \   'meets'   : 'acp#meetsForRubyOmni',
-        \   'repeat'  : 0,
-        \ })
-  "---------------------------------------------------------------------------
   call add(behavs.python, {
         \   'command' : "\<C-x>\<C-o>",
         \   'meets'   : 'acp#meetsForPythonOmni',

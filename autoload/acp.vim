@@ -291,10 +291,10 @@ function s:makeCurrentBehaviorSet(behavsLast, cursorMoved)
     let behavs = [ behavsLast[s:iBehavs] ]
   elseif a:cursorMoved
     let behavs = copy(exists('g:acp_behavior[&filetype]')
-          \                    ? g:acp_behavior[&filetype]
-          \                    : g:acp_behavior['*'])
+          \           ? g:acp_behavior[&filetype]
+          \           : g:acp_behavior['*'])
   else
-    let behavs = []
+    return []
   endif
   let text = s:getCurrentText()
   call filter(behavs, 'call(v:val.meets, [text])')

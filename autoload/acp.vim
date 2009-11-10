@@ -19,7 +19,7 @@ function acp#enable()
 
   augroup AcpGlobalAutoCommand
     autocmd!
-    autocmd InsertEnter * unlet! s:posLast s:lastUncompletableWord
+    autocmd InsertEnter * unlet! s:posLast s:lastUncompletable
     autocmd InsertLeave * call s:finishPopup(1)
   augroup END
 
@@ -184,15 +184,19 @@ function acp#onPopupPost()
     inoremap <silent> <expr> <C-h> acp#onBs()
     inoremap <silent> <expr> <BS>  acp#onBs()
     " a command to restore to original text and select the first match
-    return (s:behavsCurrent[0].command =~# "\<C-p>" ? "\<C-n>\<Up>"
-          \                                         : "\<C-p>\<Down>")
-  elseif exists('s:behavsCurrent[1]')
-    call remove(s:behavsCurrent, 0)
+    return (s:behavsCurrent[s:iBehavs].command =~# "\<C-p>" ? "\<C-n>\<Up>"
+          \                                                 : "\<C-p>\<Down>")
+  endif
+  let s:iBehavs += 1
+  if len(s:behavsCurrent) > s:iBehavs 
     call s:setCompletefunc()
     return printf("\<C-e>%s\<C-r>=acp#onPopupPost()\<CR>",
-          \       s:behavsCurrent[0].command)
+          \       s:behavsCurrent[s:iBehavs].command)
   else
-    let s:lastUncompletableWord = s:getCurrentWord()
+    let s:lastUncompletable = {
+          \   'word': s:getCurrentWord(),
+          \   'commands': map(copy(s:behavsCurrent), 'v:val.command')[1:],
+          \ }
     call s:finishPopup(0)
     return "\<C-e>"
   endif
@@ -202,7 +206,8 @@ endfunction
 function acp#onBs()
   " using "matchstr" and not "strpart" in order to handle multi-byte
   " characters
-  if call(s:behavsCurrent[0].meets, [matchstr(s:getCurrentText(), '.*\ze.')])
+  if call(s:behavsCurrent[s:iBehavs].meets,
+        \ [matchstr(s:getCurrentText(), '.*\ze.')])
     return "\<BS>"
   endif
   return "\<C-e>\<BS>"
@@ -281,36 +286,44 @@ function s:isCursorMovedSinceLastCall()
 endfunction
 
 "
+function s:makeCurrentBehaviorSet(behavsLast, cursorMoved)
+  if exists('behavsLast[s:iBehavs].repeat') && behavsLast[s:iBehavs].repeat
+    let behavs = [ behavsLast[s:iBehavs] ]
+  elseif a:cursorMoved
+    let behavs = copy(exists('g:acp_behavior[&filetype]')
+          \                    ? g:acp_behavior[&filetype]
+          \                    : g:acp_behavior['*'])
+  else
+    let behavs = []
+  endif
+  let text = s:getCurrentText()
+  call filter(behavs, 'call(v:val.meets, [text])')
+  let s:iBehavs = 0
+  if exists('s:lastUncompletable') &&
+        \ stridx(s:getCurrentWord(), s:lastUncompletable.word) == 0 &&
+        \ map(copy(behavs), 'v:val.command') ==# s:lastUncompletable.commands
+    let behavs = []
+  else
+    unlet! s:lastUncompletable
+  endif
+  return behavs
+endfunction
+
+"
 function s:feedPopup()
   " NOTE: CursorMovedI is not triggered while the popup menu is visible. And
   "       it will be triggered when popup menu is disappeared.
   if s:lockCount > 0 || pumvisible() || &paste
     return ''
   endif
-  if exists('s:behavsCurrent[0].onPopupClose')
-    if !call(s:behavsCurrent[0].onPopupClose, [])
+  if exists('s:behavsCurrent[s:iBehavs].onPopupClose')
+    if !call(s:behavsCurrent[s:iBehavs].onPopupClose, [])
       call s:finishPopup(1)
       return ''
     endif
   endif
-  let cursorMoved = s:isCursorMovedSinceLastCall()
-  if exists('s:behavsCurrent[0].repeat') && s:behavsCurrent[0].repeat
-    let s:behavsCurrent = [ s:behavsCurrent[0] ]
-  elseif cursorMoved
-    let s:behavsCurrent = copy(exists('g:acp_behavior[&filetype]')
-          \                    ? g:acp_behavior[&filetype]
-          \                    : g:acp_behavior['*'])
-  else
-    let s:behavsCurrent = []
-  endif
-  if exists('s:lastUncompletableWord') &&
-        \ stridx(s:getCurrentWord(), s:lastUncompletableWord) == 0
-    let s:behavsCurrent = []
-  else
-    unlet! s:lastUncompletableWord
-    let text = s:getCurrentText()
-    call filter(s:behavsCurrent, 'call(v:val.meets, [text])')
-  endif
+  let s:behavsCurrent = s:makeCurrentBehaviorSet(
+        \ s:behavsCurrent, s:isCursorMovedSinceLastCall())
   if empty(s:behavsCurrent)
     call s:finishPopup(1)
     return ''
@@ -318,7 +331,7 @@ function s:feedPopup()
   " In case of dividing words by symbols (e.g. "for(int", "ab==cd") while a
   " popup menu is visible, another popup is not available unless input <C-e>
   " or try popup once. So first completion is duplicated.
-  call insert(s:behavsCurrent, s:behavsCurrent[0])
+  call insert(s:behavsCurrent, s:behavsCurrent[s:iBehavs])
   call s:setTempOption(s:GROUP0, 'spell', 0)
   call s:setTempOption(s:GROUP0, 'completeopt', 'menuone' . (g:acp_completeoptPreview ? ',preview' : ''))
   call s:setTempOption(s:GROUP0, 'complete', g:acp_completeOption)
@@ -329,7 +342,8 @@ function s:feedPopup()
   " NOTE: 'textwidth' must be restored after <C-e>.
   call s:setTempOption(s:GROUP1, 'textwidth', 0)
   call s:setCompletefunc()
-  call feedkeys(s:behavsCurrent[0].command, 'n') " use <Plug> for silence instead of <C-r>=
+  " use <Plug> for silence instead of <C-r>=
+  call feedkeys(s:behavsCurrent[s:iBehavs].command, 'n')
   call feedkeys("\<Plug>AcpOnPopupPost", 'm')
   return '' " for <C-r>=
 endfunction
@@ -347,8 +361,8 @@ endfunction
 
 "
 function s:setCompletefunc()
-  if exists('s:behavsCurrent[0].completefunc')
-    call s:setTempOption(0, 'completefunc', s:behavsCurrent[0].completefunc)
+  if exists('s:behavsCurrent[s:iBehavs].completefunc')
+    call s:setTempOption(0, 'completefunc', s:behavsCurrent[s:iBehavs].completefunc)
   endif
 endfunction
 
@@ -385,6 +399,7 @@ let s:GROUP0 = 0
 let s:GROUP1 = 1
 let s:lockCount = 0
 let s:behavsCurrent = []
+let s:iBehavs = 0
 let s:tempOptionSet = [{}, {}]
 let s:snipItems = {}
 

@@ -290,9 +290,9 @@ CHANGELOG                                                      *acp-changelog*
   - Changed the structure of g:acp_behavior option.
   - Changed to reflect a change of behavior options (named g:acp_behavior*)
     any time it is done.
-  - Fixed a bug that completions after snipMate's trigger completion were
-    never attempted when no candidate for snipMate's trigger completion was
-    found.
+  - Fixed a bug that completions after omni completions or snipMate's trigger
+    completion were never attempted when no candidate for the former
+    completions was found.
 
 2.11.1
   - Fixed a bug that a snipMate's trigger could not be expanded when it was

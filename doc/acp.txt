@@ -287,6 +287,7 @@ CHANGELOG                                                      *acp-changelog*
   - Added g:acp_behaviorKeywordIgnores option.
   - Added g:acp_behaviorUserDefinedMeets option and removed
     g:acp_behaviorUserDefinedPattern.
+  - Changed to do auto-popup only when a buffer is modified.
   - Changed the structure of g:acp_behavior option.
   - Changed to reflect a change of behavior options (named g:acp_behavior*)
     any time it is done.

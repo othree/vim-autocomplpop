@@ -270,19 +270,33 @@ function s:getCurrentText()
 endfunction
 
 "
-function s:isCursorMovedSinceLastCall()
+function s:getPostText()
+  return strpart(getline('.'), col('.') - 1)
+endfunction
+
+"
+function s:isModifiedSinceLastCall()
   if exists('s:posLast')
     let posPrev = s:posLast
+    let nLinesPrev = s:nLinesLast
+    let textPrev = s:textLast
+    let postTextPrev = s:postTextLast
   endif
   let s:posLast = getpos('.')
+  let s:nLinesLast = line('$')
+  let s:textLast = s:getCurrentText()
+  let s:postTextLast = s:getPostText()
   if !exists('posPrev')
     return 1
-  elseif has('multi_byte_ime')
-    return (posPrev[1] != s:posLast[1] || posPrev[2] + 1 == s:posLast[2] ||
-          \ posPrev[2] > s:posLast[2])
-  else
-    return (posPrev != s:posLast)
+  elseif posPrev[1] != s:posLast[1] || nLinesPrev != s:nLinesLast
+    return (posPrev[1] - s:posLast[1] == nLinesPrev - s:nLinesLast)
+  elseif textPrev ==# s:textLast || postTextPrev !=# s:postTextLast
+    return 0
+  elseif has('gui') && has('multi_byte') && !has('win32') && !has('win64')
+    " NOTE: auto-popup causes a strange behavior when XIM is working
+    return empty(s:textLast) || char2nr(matchstr(s:textLast, '.$')) < 0x80
   endif
+  return 1
 endfunction
 
 "
@@ -323,7 +337,7 @@ function s:feedPopup()
     endif
   endif
   let s:behavsCurrent = s:makeCurrentBehaviorSet(
-        \ s:behavsCurrent, s:isCursorMovedSinceLastCall())
+        \ s:behavsCurrent, s:isModifiedSinceLastCall())
   if empty(s:behavsCurrent)
     call s:finishPopup(1)
     return ''

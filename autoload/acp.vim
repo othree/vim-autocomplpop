@@ -127,6 +127,12 @@ function acp#meetsForPythonOmni(context)
 endfunction
 
 "
+function acp#meetsForPerlOmni(context)
+  return g:acp_behaviorPerlOmniLength >= 0 &&
+        \ a:context =~ '\w->\k\{' . g:acp_behaviorPerlOmniLength . ',}$'
+endfunction
+
+"
 function acp#meetsForXmlOmni(context)
   return g:acp_behaviorXmlOmniLength >= 0 &&
         \ a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .

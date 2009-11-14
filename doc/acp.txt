@@ -283,7 +283,7 @@ SPECIAL THANKS                                                    *acp-thanks*
 ==============================================================================
 CHANGELOG                                                      *acp-changelog*
 
-2.12.2
+2.13
   - Changed to sort snipMate's triggers.
   - Fixed a bug that a wasted character was inserted after snipMate's trigger
     completion.

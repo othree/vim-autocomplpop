@@ -122,20 +122,22 @@ endfunction
 
 "
 function acp#meetsForPythonOmni(context)
-  return has('python') &&
+  return has('python') && g:acp_behaviorPythonOmniLength >= 0 &&
         \ a:context =~ '\k\.\k\{' . g:acp_behaviorPythonOmniLength . ',}$'
 endfunction
 
 "
 function acp#meetsForXmlOmni(context)
-  return a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .
-        \             g:acp_behaviorXmlOmniLength . ',}$'
+  return g:acp_behaviorXmlOmniLength >= 0 &&
+        \ a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .
+        \              g:acp_behaviorXmlOmniLength . ',}$'
 endfunction
 
 "
 function acp#meetsForHtmlOmni(context)
-  return a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .
-        \             g:acp_behaviorHtmlOmniLength . ',}$'
+  return g:acp_behaviorHtmlOmniLength >= 0 &&
+        \ a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .
+        \              g:acp_behaviorHtmlOmniLength . ',}$'
 endfunction
 
 "

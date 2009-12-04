@@ -365,9 +365,8 @@ function s:feedPopup()
   " NOTE: 'textwidth' must be restored after <C-e>.
   call s:setTempOption(s:GROUP1, 'textwidth', 0)
   call s:setCompletefunc()
-  " use <Plug> for silence instead of <C-r>=
   call feedkeys(s:behavsCurrent[s:iBehavs].command . "\<C-r>=acp#onPopupPost()\<CR>", 'n')
-  return '' " for <C-r>=
+  return '' " this function is called by <C-r>=
 endfunction
 
 "

@@ -5,10 +5,15 @@
 "=============================================================================
 " LOAD GUARD {{{1
 
+let s:VERSION_VIM = 702
+let s:VERSION_L9 = 00.0100
 if exists('g:loaded_acp')
   finish
-elseif v:version < 702
-  echoerr 'AutoComplPop does not support this version of vim (' . v:version . ').'
+elseif v:version < s:VERSION_VIM
+  echoerr 'AutoComplPop requires Vim version ' . s:VERSION_VIM
+  finish
+elseif !exists('*l9#isCompatible') || !l9#isCompatible(s:VERSION_L9)
+  echoerr 'AutoComplPop requires l9 library version ' . s:VERSION_L9
   finish
 endif
 let g:loaded_acp = 1
@@ -16,13 +21,6 @@ let g:loaded_acp = 1
 " }}}1
 "=============================================================================
 " FUNCTION: {{{1
-
-"
-function s:defineOption(name, default)
-  if !exists(a:name)
-    let {a:name} = a:default
-  endif
-endfunction
 
 "
 function s:makeDefaultBehavior()
@@ -125,27 +123,27 @@ endfunction
 " INITIALIZATION {{{1
 
 "-----------------------------------------------------------------------------
-call s:defineOption('g:acp_enableAtStartup', 1)
-call s:defineOption('g:acp_mappingDriven', 0)
-call s:defineOption('g:acp_ignorecaseOption', 1)
-call s:defineOption('g:acp_completeOption', '.,w,b,k')
-call s:defineOption('g:acp_completeoptPreview', 0)
-call s:defineOption('g:acp_behaviorUserDefinedFunction', '')
-call s:defineOption('g:acp_behaviorUserDefinedMeets', '')
-call s:defineOption('g:acp_behaviorSnipmateLength', -1)
-call s:defineOption('g:acp_behaviorKeywordCommand', "\<C-n>")
-call s:defineOption('g:acp_behaviorKeywordLength', 2)
-call s:defineOption('g:acp_behaviorKeywordIgnores', [])
-call s:defineOption('g:acp_behaviorFileLength', 0)
-call s:defineOption('g:acp_behaviorRubyOmniMethodLength', 0)
-call s:defineOption('g:acp_behaviorRubyOmniSymbolLength', 1)
-call s:defineOption('g:acp_behaviorPythonOmniLength', 0)
-call s:defineOption('g:acp_behaviorPerlOmniLength', -1)
-call s:defineOption('g:acp_behaviorXmlOmniLength', 0)
-call s:defineOption('g:acp_behaviorHtmlOmniLength', 0)
-call s:defineOption('g:acp_behaviorCssOmniPropertyLength', 1)
-call s:defineOption('g:acp_behaviorCssOmniValueLength', 0)
-call s:defineOption('g:acp_behavior', {})
+call l9#defineVariableDefault('g:acp_enableAtStartup', 1)
+call l9#defineVariableDefault('g:acp_mappingDriven', 0)
+call l9#defineVariableDefault('g:acp_ignorecaseOption', 1)
+call l9#defineVariableDefault('g:acp_completeOption', '.,w,b,k')
+call l9#defineVariableDefault('g:acp_completeoptPreview', 0)
+call l9#defineVariableDefault('g:acp_behaviorUserDefinedFunction', '')
+call l9#defineVariableDefault('g:acp_behaviorUserDefinedMeets', '')
+call l9#defineVariableDefault('g:acp_behaviorSnipmateLength', -1)
+call l9#defineVariableDefault('g:acp_behaviorKeywordCommand', "\<C-n>")
+call l9#defineVariableDefault('g:acp_behaviorKeywordLength', 2)
+call l9#defineVariableDefault('g:acp_behaviorKeywordIgnores', [])
+call l9#defineVariableDefault('g:acp_behaviorFileLength', 0)
+call l9#defineVariableDefault('g:acp_behaviorRubyOmniMethodLength', 0)
+call l9#defineVariableDefault('g:acp_behaviorRubyOmniSymbolLength', 1)
+call l9#defineVariableDefault('g:acp_behaviorPythonOmniLength', 0)
+call l9#defineVariableDefault('g:acp_behaviorPerlOmniLength', -1)
+call l9#defineVariableDefault('g:acp_behaviorXmlOmniLength', 0)
+call l9#defineVariableDefault('g:acp_behaviorHtmlOmniLength', 0)
+call l9#defineVariableDefault('g:acp_behaviorCssOmniPropertyLength', 1)
+call l9#defineVariableDefault('g:acp_behaviorCssOmniValueLength', 0)
+call l9#defineVariableDefault('g:acp_behavior', {})
 "-----------------------------------------------------------------------------
 call extend(g:acp_behavior, s:makeDefaultBehavior(), 'keep')
 "-----------------------------------------------------------------------------

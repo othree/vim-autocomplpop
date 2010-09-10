@@ -34,12 +34,16 @@ You should place the files as follows:
         <your runtime directory>/doc/acp.txt
         ...
 <
-If you disgust to jumble up this plugin and other plugins in your runtime
-directory, put the files into new directory and just add the directory path to
-'runtimepath'. It's easy to uninstall the plugin.
+If you are disgusted to make your runtime directory confused with a lot of
+plugins, put each of the plugins into a directory individually and just add
+the directory path to 'runtimepath'. It's easy to uninstall the plugin.
 
-And then update your help tags files to enable fuzzyfinder help. See
+Then update your help tags files to enable the help for this plugin. See
 |add-local-help| for details.
+
+Requirements: ~
+
+- L9 library ( http://bitbucket.org/ns9tks/vim-l9/ )
 
 
 ==============================================================================

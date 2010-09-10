@@ -306,6 +306,9 @@ SPECIAL THANKS                                                    *acp-thanks*
 ==============================================================================
 CHANGELOG                                                      *acp-changelog*
 
+3.0: [TODO]
+  - 
+
 2.14.1
   - Changed the way of auto-popup for avoiding an issue about filename
     completion.

@@ -43,7 +43,7 @@ Then update your help tags files to enable the help for this plugin. See
 
 Requirements: ~
 
-- L9 library ( http://bitbucket.org/ns9tks/vim-l9/ )
+- L9 library (vimscript #3252)
 
 
 ==============================================================================
@@ -307,7 +307,7 @@ SPECIAL THANKS                                                    *acp-thanks*
 CHANGELOG                                                      *acp-changelog*
 
 3.0: [TODO]
-  - 
+  - From this version, L9 library (vimscript #3252) is required.
 
 2.14.1
   - Changed the way of auto-popup for avoiding an issue about filename

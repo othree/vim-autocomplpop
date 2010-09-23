@@ -5,9 +5,14 @@
 "=============================================================================
 " LOAD GUARD {{{1
 
-if !l9#guardScriptLoading(expand('<sfile>:p'), 702, 100)
+try
+  if !l9#guardScriptLoading(expand('<sfile>:p'), 702, 100)
+    finish
+  endif
+catch /E117/
+  echoerr '***** L9 library must be installed! *****'
   finish
-endif
+endtry
 
 " }}}1
 "=============================================================================

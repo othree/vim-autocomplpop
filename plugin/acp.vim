@@ -6,7 +6,7 @@
 " LOAD GUARD {{{1
 
 try
-  if !l9#guardScriptLoading(expand('<sfile>:p'), 702, 100)
+  if !l9#guardScriptLoading(expand('<sfile>:p'), 702, 101, [])
     finish
   endif
 catch /E117/

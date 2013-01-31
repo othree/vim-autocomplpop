@@ -188,7 +188,7 @@ endfunction
 function acp#onPopupPost()
   " to clear <C-r>= expression on command-line
   echo ''
-  if pumvisible()
+  if pumvisible() && exists('s:behavsCurrent[s:iBehavs]')
     inoremap <silent> <expr> <C-h> acp#onBs()
     inoremap <silent> <expr> <BS>  acp#onBs()
     " a command to restore to original text and select the first match

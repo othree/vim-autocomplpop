@@ -21,14 +21,17 @@ endtry
 "
 function s:makeDefaultBehavior()
   let behavs = {
-        \   '*'      : [],
-        \   'ruby'   : [],
-        \   'python' : [],
-        \   'perl'   : [],
-        \   'xml'    : [],
-        \   'html'   : [],
-        \   'xhtml'  : [],
-        \   'css'    : [],
+        \   '*'         : [],
+        \   'ruby'      : [],
+        \   'python'    : [],
+        \   'perl'      : [],
+        \   'xml'       : [],
+        \   'html'      : [],
+        \   'xhtml'     : [],
+        \   'css'       : [],
+        \   'javascript': [],
+        \   'coffee'    : [],
+        \   'ls'        : [],
         \ }
   "---------------------------------------------------------------------------
   if !empty(g:acp_behaviorUserDefinedFunction) &&
@@ -111,6 +114,21 @@ function s:makeDefaultBehavior()
         \   'repeat'  : 0,
         \ })
   "---------------------------------------------------------------------------
+  call add(behavs.javascript, {
+        \   'command' : "\<C-x>\<C-o>",
+        \   'meets'   : 'acp#meetsForJavaScriptOmni',
+        \   'repeat'  : 0,
+  \})
+  call add(behavs.coffee, {
+        \   'command' : "\<C-x>\<C-o>",
+        \   'meets'   : 'acp#meetsForJavaScriptOmni',
+        \   'repeat'  : 0,
+  \})
+  call add(behavs.ls, {
+        \   'command' : "\<C-x>\<C-o>",
+        \   'meets'   : 'acp#meetsForJavaScriptOmni',
+        \   'repeat'  : 0,
+  \})
   return behavs
 endfunction
 

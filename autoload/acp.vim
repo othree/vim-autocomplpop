@@ -140,9 +140,25 @@ endfunction
 
 "
 function acp#meetsForHtmlOmni(context)
-  return g:acp_behaviorHtmlOmniLength >= 0 &&
-        \ a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .
-        \              g:acp_behaviorHtmlOmniLength . ',}$'
+    if g:acp_behaviorHtmlOmniLength >= 0
+        if a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .g:acp_behaviorHtmlOmniLength . ',}$'
+            return 1
+        elseif a:context =~ '\(\<\k\{1,}\(=\"\)\{0,1}\|\" \)$'
+            let cur = line('.')-1
+            while cur > 0
+                let lstr = getline(cur)
+                if lstr =~ '>[^>]*$'
+                    return 0
+                elseif lstr =~ '<[^<]*$'
+                    return 1
+                endif
+                let cur = cur-1
+            endwhile
+            return 0
+        endif
+    else
+        return 0
+    endif
 endfunction
 
 "
@@ -158,6 +174,15 @@ function acp#meetsForCssOmni(context)
     return 1
   endif
   return 0
+endfunction
+
+"
+function acp#meetsForJavaScriptOmni(context)
+    let matches = matchlist(a:context, '\(\k\{1}\)$')
+    if empty(matches)
+        return 0
+    endif
+    return 1
 endfunction
 
 "

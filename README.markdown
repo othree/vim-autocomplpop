@@ -2,6 +2,13 @@
 
 Auto trigger complete popup menu.
 
+## Changes
+
+* Add default behavior for javascript, coffee, ls, css
+* Supports [garbas/vim-snipmate][].
+
+[garbas/vim-snipmate]:https://github.com/garbas/vim-snipmate
+
 ## Old About
 
 Author:  Takeshi NISHIDA <ns9tks@DELETE-ME.gmail.com>
@@ -15,7 +22,7 @@ Please submit to http://bitbucket.org/ns9tks/vim-autocomplpop/issues/ .
 
 ## License
 
-Copyright (c) 2007-2009 Takeshi NISHIDA, 2012 Wei-Ko Kao
+Copyright (c) 2007-2009 Takeshi NISHIDA, 2012-2013 Wei-Ko Kao
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

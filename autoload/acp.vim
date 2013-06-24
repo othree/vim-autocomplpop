@@ -192,20 +192,18 @@ function acp#completeSnipmate(findstart, base)
     return s:posSnipmateCompletion
   endif
   let lenBase = len(a:base)
-  let items = filter(GetSnipsInCurrentScope(),
-        \            'strpart(v:key, 0, lenBase) ==? a:base')
-  return map(sort(items(items)), 's:makeSnipmateItem(v:val[0], v:val[1])')
+  let items = snipMate#GetSnippetsForWordBelowCursor(a:base, '\c', 0)
+  call filter(items, 'strpart(v:val[0], 0, len(a:base)) ==? a:base')
+  return map(sort(items), 's:makeSnipmateItem(v:val[0], values(v:val[1])[0])')
 endfunction
 
 "
 function acp#onPopupCloseSnipmate()
   let word = s:getCurrentText()[s:posSnipmateCompletion :]
-  for trigger in keys(GetSnipsInCurrentScope())
-    if word ==# trigger
-      call feedkeys("\<C-r>=TriggerSnippet()\<CR>", "n")
-      return 0
-    endif
-  endfor
+  if len(snipMate#GetSnippetsForWordBelowCursor(word, '\c', 0))
+    call feedkeys("\<C-r>=snipMate#TriggerSnippet()\<CR>", "n")
+    return 0
+  endif
   return 1
 endfunction
 
@@ -411,6 +409,9 @@ function s:makeSnipmateItem(key, snip)
   if type(a:snip) == type([])
     let descriptions = map(copy(a:snip), 'v:val[0]')
     let snipFormatted = '[MULTI] ' . join(descriptions, ', ')
+  elseif type(a:snip) == type({})
+    let descriptions = values(a:snip)[0]
+    let snipFormatted = substitute(descriptions, '\(\n\|\s\)\+', ' ', 'g')
   else
     let snipFormatted = substitute(a:snip, '\(\n\|\s\)\+', ' ', 'g')
   endif
@@ -424,7 +425,7 @@ endfunction
 function s:getMatchingSnipItems(base)
   let key = a:base . "\n"
   if !exists('s:snipItems[key]')
-    let s:snipItems[key] = items(GetSnipsInCurrentScope())
+    let s:snipItems[key] = snipMate#GetSnippetsForWordBelowCursor(a:base, '\c', 0)
     call filter(s:snipItems[key], 'strpart(v:val[0], 0, len(a:base)) ==? a:base')
     call map(s:snipItems[key], 's:makeSnipmateItem(v:val[0], v:val[1])')
   endif

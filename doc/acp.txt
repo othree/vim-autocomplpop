@@ -76,22 +76,11 @@ snipMate's Trigger Completion ~
 
 snipMate's trigger completion enables you to complete a snippet trigger
 provided by snipMate plugin
-(http://www.vim.org/scripts/script.php?script_id=2540) and expand it.
+(https://github.com/garbas/vim-snipmate) and expand it.
 
 
-To enable auto-popup for this completion, add following function to
-plugin/snipMate.vim:
->
-  fun! GetSnipsInCurrentScope()
-    let snips = {}
-    for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
-      call extend(snips, get(s:snippets, scope, {}), 'keep')
-      call extend(snips, get(s:multi_snips, scope, {}), 'keep')
-    endfor
-    return snips
-  endf
-<
-And set |g:acp_behaviorSnipmateLength| option to 1.
+To enable auto-popup for this completion, set|g:acp_behaviorSnipmateLength| 
+option to 1.
 
 There is the restriction on this auto-popup, that the word before cursor must
 consist only of uppercase characters.

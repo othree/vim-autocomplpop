@@ -192,7 +192,7 @@ function acp#completeSnipmate(findstart, base)
     return s:posSnipmateCompletion
   endif
   let lenBase = len(a:base)
-  let items = snipMate#GetSnippetsForWordBelowCursor(a:base, '\c', 0)
+  let items = snipMate#GetSnippetsForWordBelowCursor(a:base, 0)
   call filter(items, 'strpart(v:val[0], 0, len(a:base)) ==? a:base')
   return map(sort(items), 's:makeSnipmateItem(v:val[0], values(v:val[1])[0])')
 endfunction
@@ -200,7 +200,7 @@ endfunction
 "
 function acp#onPopupCloseSnipmate()
   let word = s:getCurrentText()[s:posSnipmateCompletion :]
-  if len(snipMate#GetSnippetsForWordBelowCursor(word, '\c', 0))
+  if len(snipMate#GetSnippetsForWordBelowCursor(word, 0))
     call feedkeys("\<C-r>=snipMate#TriggerSnippet()\<CR>", "n")
     return 0
   endif
@@ -425,7 +425,7 @@ endfunction
 function s:getMatchingSnipItems(base)
   let key = a:base . "\n"
   if !exists('s:snipItems[key]')
-    let s:snipItems[key] = snipMate#GetSnippetsForWordBelowCursor(a:base, '\c', 0)
+    let s:snipItems[key] = snipMate#GetSnippetsForWordBelowCursor(tolower(a:base), 0)
     call filter(s:snipItems[key], 'strpart(v:val[0], 0, len(a:base)) ==? a:base')
     call map(s:snipItems[key], 's:makeSnipmateItem(v:val[0], v:val[1])')
   endif

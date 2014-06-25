@@ -222,7 +222,7 @@ function acp#onPopupPost()
       echom g:AutoComplPopDontSelectFirst
       return (s:behavsCurrent[s:iBehavs].command =~# "\<C-p>" ? "\<C-n>\<Up>"
             \                                                 : "\<C-p>\<Down>")
-endif
+    endif
   endif
   let s:iBehavs += 1
   if len(s:behavsCurrent) > s:iBehavs 

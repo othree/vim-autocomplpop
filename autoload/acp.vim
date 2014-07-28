@@ -214,9 +214,14 @@ function acp#onPopupPost()
   if pumvisible() && exists('s:behavsCurrent[s:iBehavs]')
     inoremap <silent> <expr> <C-h> acp#onBs()
     inoremap <silent> <expr> <BS>  acp#onBs()
-    " a command to restore to original text and select the first match
-    return (s:behavsCurrent[s:iBehavs].command =~# "\<C-p>" ? "\<C-n>\<Up>"
-          \                                                 : "\<C-p>\<Down>")
+    if exists('g:AutoComplPopDontSelectFirst') ? g:AutoComplPopDontSelectFirst : 0
+      return (s:behavsCurrent[s:iBehavs].command =~# "\<C-p>" ? "\<C-n>"
+            \                                                 : "\<C-p>")
+    else
+      " a command to restore to original text and select the first match
+      return (s:behavsCurrent[s:iBehavs].command =~# "\<C-p>" ? "\<C-n>\<Up>"
+            \                                                 : "\<C-p>\<Down>")
+    endif
   endif
   let s:iBehavs += 1
   if len(s:behavsCurrent) > s:iBehavs 

@@ -63,7 +63,7 @@ function acp#meetsForSnipmate(context)
   if g:acp_behaviorSnipmateLength < 0
     return 0
   endif
-  let matches = matchlist(a:context, '\(^\|\s\|\<\)\(\u\{' .
+  let matches = matchlist(a:context, '\(^\|\s\|"\@<!\<\)\(\u\{' .
         \                            g:acp_behaviorSnipmateLength . ',}\)$')
   return !empty(matches) && !empty(s:getMatchingSnipItems(matches[2]))
 endfunction

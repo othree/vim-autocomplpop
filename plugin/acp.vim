@@ -29,6 +29,7 @@ function s:makeDefaultBehavior()
         \   'html'      : [],
         \   'xhtml'     : [],
         \   'css'       : [],
+        \   'scss'      : [],
         \   'javascript': [],
         \   'coffee'    : [],
         \   'ls'        : [],
@@ -109,6 +110,17 @@ function s:makeDefaultBehavior()
         \ })
   "---------------------------------------------------------------------------
   call add(behavs.css, {
+        \   'command' : "\<C-x>\<C-o>",
+        \   'meets'   : 'acp#meetsForCssOmni',
+        \   'repeat'  : 0,
+        \ })
+  "---------------------------------------------------------------------------
+  call add(behavs.scss, {
+        \   'command' : "\<C-x>\<C-f>",
+        \   'meets'   : 'acp#meetsForFile',
+        \   'repeat'  : 1,
+        \ })
+  call add(behavs.scss, {
         \   'command' : "\<C-x>\<C-o>",
         \   'meets'   : 'acp#meetsForCssOmni',
         \   'repeat'  : 0,

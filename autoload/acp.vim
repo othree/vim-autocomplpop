@@ -25,7 +25,7 @@ function acp#enable()
   if g:acp_mappingDriven
     call s:mapForMappingDriven()
   else
-    autocmd AcpGlobalAutoCommand CursorMovedI * call s:feedPopup()
+    autocmd AcpGlobalAutoCommand CursorMovedI * nested call s:feedPopup()
   endif
 
   nnoremap <silent> i i<C-r>=<SID>feedPopup()<CR>
@@ -63,8 +63,8 @@ function acp#meetsForSnipmate(context)
   if g:acp_behaviorSnipmateLength < 0
     return 0
   endif
-  let matches = matchlist(a:context, "\(^\|\s\|[\"']\@<!\<\)\(\u\{" .
-        \                            g:acp_behaviorSnipmateLength . ",}\)$")
+  let matches = matchlist(a:context, '\(^\|\s\|[\"'']\@<!\<\)\(\u\{' .
+        \                            g:acp_behaviorSnipmateLength . ',}\)$')
   return !empty(matches) && !empty(s:getMatchingSnipItems(matches[2]))
 endfunction
 
@@ -412,10 +412,10 @@ endfunction
 "
 function s:makeSnipmateItem(key, snip)
   if type(a:snip) == type([])
-    let descriptions = map(copy(a:snip), 'v:val[0]')
-    let snipFormatted = '[MULTI] ' . join(descriptions, ', ')
+    let descriptions = a:snip[0]
+    let snipFormatted = descriptions
   elseif type(a:snip) == type({})
-    let descriptions = values(a:snip)[0]
+    let descriptions = values(a:snip)[0][0]
     let snipFormatted = substitute(descriptions, '\(\n\|\s\)\+', ' ', 'g')
   else
     let snipFormatted = substitute(a:snip, '\(\n\|\s\)\+', ' ', 'g')

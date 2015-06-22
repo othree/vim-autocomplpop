@@ -25,6 +25,7 @@ function s:makeDefaultBehavior()
         \   'ruby'      : [],
         \   'python'    : [],
         \   'perl'      : [],
+        \   'php'       : [],
         \   'xml'       : [],
         \   'html'      : [],
         \   'xhtml'     : [],
@@ -91,6 +92,12 @@ function s:makeDefaultBehavior()
         \   'repeat'  : 0,
         \ })
   "---------------------------------------------------------------------------
+  call add(behavs.php, {
+        \   'command'      : "\<C-x>\<C-o>",
+        \   'meets'        : 'acp#meetsForPhpOmni',
+        \   'repeat'       : 0,
+        \ })
+  "---------------------------------------------------------------------------
   call add(behavs.xml, {
         \   'command' : "\<C-x>\<C-o>",
         \   'meets'   : 'acp#meetsForXmlOmni',
@@ -144,9 +151,9 @@ function s:makeDefaultBehavior()
   return behavs
 endfunction
 
-" }}}1
+" }}}1a
 "=============================================================================
-" INITIALIZATION {{{1
+" INITIaALIZATION {{{1
 
 "-----------------------------------------------------------------------------
 call l9#defineVariableDefault('g:acp_enableAtStartup', 1)
@@ -165,6 +172,7 @@ call l9#defineVariableDefault('g:acp_behaviorRubyOmniMethodLength', 0)
 call l9#defineVariableDefault('g:acp_behaviorRubyOmniSymbolLength', 1)
 call l9#defineVariableDefault('g:acp_behaviorPythonOmniLength', 0)
 call l9#defineVariableDefault('g:acp_behaviorPerlOmniLength', -1)
+call l9#defineVariableDefault('g:acp_behaviorPhpOmniLength', 1)
 call l9#defineVariableDefault('g:acp_behaviorXmlOmniLength', 0)
 call l9#defineVariableDefault('g:acp_behaviorHtmlOmniLength', 0)
 call l9#defineVariableDefault('g:acp_behaviorCssOmniPropertyLength', 1)

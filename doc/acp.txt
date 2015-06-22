@@ -61,6 +61,7 @@ default behavior is as follows:
         Omni      ruby        ".", "::" or non-word character + ":"
                               (|+ruby| required.)
         Omni      python      "." (|+python| required.)
+        Omni      php         "$", "->", "::", "new "
         Omni      xml         "<", "</" or ("<" + non-">" characters + " ")
         Omni      html/xhtml  "<", "</" or ("<" + non-">" characters + " ")
         Omni      css         (":", ";", "{", "^", "@", or "!")
@@ -93,6 +94,16 @@ AutoComplPop supports perl-completion.vim
 
 To enable auto-popup for this completion, set |g:acp_behaviorPerlOmniLength|
 option to 0 or more.
+
+
+PHP Omni-Completion ~
+
+AutoComplPop supports phpcomplete.vim
+(https://github.com/shawncplus/phpcomplete.vim).
+
+To enable auto-popup for this completion, set|g:acp_behaviorPhpOmniLength|
+option to 1.
+
 
 
 ==============================================================================
@@ -297,6 +308,7 @@ CHANGELOG                                                      *acp-changelog*
 
 3.0: [TODO]
   - From this version, L9 library (vimscript #3252) is required.
+  - Added support for phpcomplete.vim.
 
 2.14.1
   - Changed the way of auto-popup for avoiding an issue about filename

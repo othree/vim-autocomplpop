@@ -132,6 +132,28 @@ function acp#meetsForPerlOmni(context)
 endfunction
 
 "
+function acp#meetsForPhpOmni(context)
+  if g:acp_behaviorPhpOmniLength < 1
+    return 0
+  endif
+  if a:context =~ '[^a-zA-Z0-9_:>\$]$'
+    return 0
+  endif
+  if a:context =~ 'new \k\{' . 
+     \            g:acp_behaviorPhpOmniLength . ',}$'
+     return 1
+  endif
+  if a:context =~ '\$\{' . 
+     \            g:acp_behaviorPhpOmniLength . ',}$'
+     return 1
+  endif
+  if a:context =~ '[^.]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?'
+     return 1
+  endif
+  return 0
+endfunction
+
+"
 function acp#meetsForXmlOmni(context)
   return g:acp_behaviorXmlOmniLength >= 0 &&
         \ a:context =~ '\(<\|<\/\|<[^>]\+ \|<[^>]\+=\"\)\k\{' .

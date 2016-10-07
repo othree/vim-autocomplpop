@@ -153,7 +153,7 @@ endfunction
 
 " }}}1a
 "=============================================================================
-" INITIaALIZATION {{{1
+" INITIALIZATION {{{1
 
 "-----------------------------------------------------------------------------
 call l9#defineVariableDefault('g:acp_enableAtStartup', 1)

@@ -268,7 +268,10 @@ function acp#onBs()
         \ [matchstr(s:getCurrentText(), '.*\ze.')])
     return "\<BS>"
   endif
-  return "\<C-e>\<BS>"
+  if pumvisible()
+    return "\<C-e>\<BS>"
+  endif
+  return "\<BS>"
 endfunction
 
 " }}}1

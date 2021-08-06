@@ -195,10 +195,18 @@ command! -bar -narg=0 AutoComplPopUnlock  AcpUnlock
 if g:acp_enableAtStartup
   AcpEnable
 endif
-" Disable ACP when in nvim terminal emulator
+
+" Disable ACP when in terminal emulator
 if has("nvim")
   au BufEnter,TermOpen term://* AcpDisable
   au BufLeave term://* AcpEnable
+elseif v:version >= 801
+  au BufEnter,TerminalOpen * if &buftype == 'terminal'
+    \|   AcpDisable
+    \| endif
+  au BufLeave * if &buftype == 'terminal'
+    \|   AcpEnable
+    \| endif
 endif
 
 " }}}1
